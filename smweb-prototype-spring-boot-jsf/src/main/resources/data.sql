@@ -1,0 +1,5 @@
+INSERT INTO IDENT VALUES (1, 'admin@email.com', 'admin', '$2a$10$GsWqZK8cIbnLDEkbNzY/YeM970zKfibZKCCpY/7No/sBoLCTUkdJO');
+INSERT INTO IDENT VALUES (2, 'general@email.com', 'general', '$2a$10$OaqDFbE/RRY8lHgjMDr3geXdLv31v/fq4Fsc4fEnRBspm76ZLALhC');
+
+INSERT INTO IDENT_ADMIN VALUES (1);
+INSERT INTO IDENT_GENERAL VALUES (2);

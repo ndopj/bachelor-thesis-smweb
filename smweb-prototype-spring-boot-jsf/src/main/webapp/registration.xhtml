@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/templates/public-template.xhtml"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Registration
+    </ui:define>
+
+    <ui:define name="content">
+        <h1>Registration form</h1>
+        <h:form id="register">
+            <table>
+                <tr>
+                    <td>login: </td>
+                    <td>
+                    <h:inputText id="login" required="true"
+                                     requiredMessage="Login can not be empty"
+                                     value="#{userForm.userName}"
+                                     validator="#{userController.validateRegisterPilot}"/><br/>
+                        <h:message for="login" styleClass="error"/></td>
+                    <td>Login for the website.</td>
+                </tr>
+                <tr>
+                    <td>Password: </td>
+                    <td><h:inputSecret id="pass" required="true"
+                                       requiredMessage="Password can not be empty"
+                                       value="#{userForm.password}"/><br/>
+                        <h:message for="pass" styleClass="error"/></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><h:commandButton value="Register as pilot" action="#{userController.register('PILOT')}"/></td>
+                </tr>
+            </table>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
