@@ -38,8 +38,7 @@ Compilation:
 ### smweb-new-generation
 This project is direct implementation of bachelors thesis for which this repository was created.
 It can be deployed on: Tomcat 9.0.10, Jetty 9.4.22 and Wildfly 17.0.0
-Full functionallity of this project can be found at:
-https://is.muni.cz/auth/th/suevf/?fakulta=1433;obdobi=7643;sorter=vedouci;balik=1275
+For project architecture, used frameworks, tools etc. please see full text of my thesis.
 
 Compilation:
 <pre>
