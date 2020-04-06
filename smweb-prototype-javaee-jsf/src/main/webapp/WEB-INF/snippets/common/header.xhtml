@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <div>
+        <div id="top-loginBox">
+            <ui:include src="../loginBox.xhtml"/>
+        </div>
+        <div id="breadcrums">
+            <!-- Nasleduje vycet sekcii, do ktorych ma uzivatel pristup:  -->
+            <!-- Do Public skecie ma pristup kazdy: -->
+            <a href="#{request.contextPath}/">Verejná sekcia</a>
+
+            | <a href="#{request.contextPath}/">ClodWar</a> <!-- "/clodwar" -->
+
+            <c:if test="#{authenticationBacking.getIdentity() != null}" >
+                | <a href="#{request.contextPath}/" >ClodWar Lobby</a> <!-- "/clodwar/lobby.html" -->
+            </c:if>
+            <c:if test="#{authenticationBacking.isAllowedEnterSection('pilot-section')}" >
+                | <a href="#{request.contextPath}/pilot/index.xhtml" >Sekcia pilota</a>
+            </c:if>
+            <c:if test="#{authenticationBacking.isAllowedEnterSection('general-section')}" >
+                | <a href="#{request.contextPath}/general/index.xhtml" >Sekcia generála</a>
+            </c:if>
+            <c:if test="#{authenticationBacking.isAllowedEnterSection('admin-section')}" >
+                | <a href="#{request.contextPath}/admin/index.xhtml" >Sekcia administrátora</a>
+            </c:if>
+        </div>
+        <!--
+                <div id="top-loginBox"><ui:include src="/WEB-INF/snippets/loginBox.xhtml"/></div>
+                <div id="breadcrums">
+                    <a href="#{request.contextPath}/">Verejná sekcia</a>
+                    <!- - <a href="#{request.contextPath}/general/index.jsf">gene</a> - ->
+                    | Sekcia generála
+                </div>
+        -->
+    </div>
+</ui:composition>

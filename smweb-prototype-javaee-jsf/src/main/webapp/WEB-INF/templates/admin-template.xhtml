@@ -1,0 +1,17 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/templates/main-template.xhtml">
+    <ui:define name="top">
+        <!-- <ui:include src="/WEB-INF/snippets/admin/header.xhtml"/> -->
+        <ui:include src="../snippets/common/header.xhtml"/>
+    </ui:define>
+
+    <ui:define name="left">
+        <ui:include src="../snippets/admin/menu.xhtml"/>
+    </ui:define>
+
+    <ui:define name="bottom">
+        <ui:include src="../snippets/common/footer.xhtml"/>
+    </ui:define>
+</ui:composition>
