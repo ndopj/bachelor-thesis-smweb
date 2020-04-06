@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Sector Detail
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="/SMWeb/clodwar/templates/background/css/full.css" rel="stylesheet"/>
+        <style>
+            h4 {
+                color: black;
+            }
+        </style>
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.6); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+            <c:set value="${ClodwarProfileBean.getSectorByName(param['name'])}" var="sector"></c:set>
+            <div class="col-lg-8 col-lg-offset-2">
+                <h1 class="text-center">Sector #{sector.name}</h1>
+            </div> 
+            <div class="col-lg-2">   
+                <ul class="list-inline">    
+                    <c:if test="#{sector.side == 'BLUE'}">
+                        <li><img src="/SMWeb/clodwar/templates/background/images/Allies.png" style="max-height: 36px; max-width: 36px; margin-top: -5px"/></li>
+                        <li><h3 style="color: blue; margin-top: 25px">Allies</h3></li>
+                    </c:if> 
+                    <c:if test="#{sector.side == 'RED'}">
+                        <li><img src="/SMWeb/clodwar/templates/background/images/Axis.png" style="max-height: 36px; max-width: 36px; margin-top: -5px"/></li>
+                        <li><h3 style="color: red; margin-top: 25px">Axis</h3></li>
+                    </c:if> 
+                </ul> 
+            </div>
+            <div class="col-md-5 col-md-offset-1">
+                <h4>Exact position: [#{ClodwarBean.round((sector.getxCoordiante() / 100) * 2747)}, #{ClodwarBean.round((sector.getyCoordiante() / 100) * 2363)}] -
+                    [#{ClodwarBean.round(((sector.getxCoordiante() / 100) * 2747) + 78.49)}, #{ClodwarBean.round(((sector.getyCoordiante() / 100) * 2363) + 78.77)}]
+                </h4>
+                <c:if test="#{sector.side == 'NONE'}">
+                    <h4>Side: None</h4> 
+                </c:if>
+                <c:if test="#{sector.side == AuthenticationBean.identity.side}">
+                    <h4>State: #{sector.state}</h4> 
+                    <h4>Units: #{sector.units}%</h4>
+                    <h4>Resources: #{sector.resources}%</h4>
+                </c:if>
+                <h4>Aerial activity: <c:if test="#{sector.colorSaturation &lt; 0.201}">None</c:if>
+                    <c:if test="#{sector.colorSaturation &gt; 0.201 and sector.colorSaturation &lt; 0.401}">Low</c:if>
+                    <c:if test="#{sector.colorSaturation &gt; 0.401 and sector.colorSaturation &lt; 0.601}">Medium</c:if>
+                    <c:if test="#{sector.colorSaturation &gt; 0.601 and sector.colorSaturation &lt; 0.801}">High</c:if>
+                    <c:if test="#{sector.colorSaturation &gt; 0.801}">Verry High</c:if>
+                </h4>
+                <h4>Is on front line: <c:if test="#{sector.frontLine.length() &gt; 1 }">Yes</c:if><c:if test="#{sector.frontLine.length() &lt; 1 }">No</c:if></h4> 
+            </div>
+        </div>
+    </ui:define>   
+    
+</ui:composition>

@@ -1,0 +1,18 @@
+/* 
+    Created on : 20.3.2017, 17:05:24
+    Author     : Matúš
+*/
+
+.table-striped.stripe>tbody>tr:nth-of-type(odd){
+    background-color: rgba(0, 0, 64, 0.2);
+}
+.table-striped.blue>tbody>tr:nth-of-type(odd){
+    background-color: rgba(0, 0, 255, 0.075);
+}            
+.table-striped.red>tbody>tr:nth-of-type(odd){
+    background-color: rgba(255, 0, 0, 0.075);
+}
+.table.clicktable>tbody>tr:hover{
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}

@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Plane Detail
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="/SMWeb/clodwar/templates/background/css/full9.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">
+        <style>
+            .table.firstleft td:first-child {
+                text-align: left;
+            }
+            h4 {
+                color: black;
+            }
+        </style>
+        <style>                        
+            .table.sort td:first-child, table.sort td:last-child{
+                text-align: center;
+            }​ 
+        </style>
+        <style>                        
+            .table.sort td:nth-child(5), table.sort td:nth-child(6){
+                text-align: right;
+            }​ 
+        </style>   
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.6); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+            <c:set value="${ClodwarProfileBean.getPlaneByName(param['name'])}" var="plane"></c:set>
+            <div class="col-lg-12">
+                <c:if test="#{ClodwarProfileBean.getPlaneByName(param['name']) == null}" >
+                    <h1 class="text-center" style="color: red">Plane with name: #{param['name']} does not exist !</h1>
+                    <script>
+                        window.stop();
+                    </script> 
+                </c:if>
+                <h1 class="text-center">#{plane.name}</h1>
+                <c:if test="#{ClodwarProfileBean.getPlaneByName(param['name']) != null and ClodwarProfileBean.getPlaneByName(param['name']).side != AuthenticationBean.identity.side}" >
+                    <h1 class="text-center" style="color: red">You are not allowed to enter this page !</h1>
+                    <script>
+                        window.stop();
+                    </script>                    
+                </c:if>
+            </div>
+             <div class="col-md-4">
+                <h4>Type: #{plane.type}</h4>
+                <h4>Category: #{plane.category}</h4>
+                <h4>Health: </h4>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success" role="progressbar" style="width: #{(plane.health / 100)*100}%">
+                        <c:if test="#{plane.health &gt;= 7}" >
+                            #{ClodwarBean.round(plane.health)}%
+                        </c:if>
+                    </div>
+                    <div class="progress-bar progress-bar-danger" role="progressbar" style="text-align: left; width: #{(100 - plane.health)/(100)*100}%">    
+                        <c:if test="#{plane.health &lt; 7}" >
+                            <div style=" margin-left: 3px">#{ClodwarBean.round(plane.health)}%</div>
+                        </c:if>
+                    </div>
+                </div>
+                <h4>Fuel: #{ClodwarBean.round(plane.fuel)}%</h4>
+                <h4>Created: #{plane.created.toLocaleString()}</h4>
+                <h4>Assigned to: 
+                    <c:if test="#{plane.owner != null}">
+                        <a href="/SMWeb/clodwar/statistics/pilot-stats.jsf?login=#{plane.owner}">#{plane.owner}</a>
+                    </c:if>
+                    <c:if test="#{plane.owner == null and plane.squadName != null}">
+                        <a href="/SMWeb/clodwar/statistics/squad-stats.jsf?name=#{plane.squadName}">#{plane.squadName}</a>
+                    </c:if>
+                    <c:if test="#{plane.owner == null and plane.squadName == null}">-</c:if>
+                </h4>
+                <h4>Homebase: <a href="/SMWeb/clodwar/profile/airfield.jsf?name=#{plane.homebase}">#{plane.homebase} airfield</a></h4>
+                <h4>Status: #{plane.status}</h4>  
+                <h4 title="#{ClodwarBean.getBlockedTitile(plane.blocked)}">Blocked until: #{plane.blocked.toLocaleString()}<c:if test="#{plane.blocked == null}">-</c:if></h4>
+                <h:form>
+                    <h3 class="text-center" style="color: black">Loadout</h3>
+                    <table class="table table-striped firstleft stripe table-bordered" id="" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                            <th>Type</th>
+                            <th style="text-align: right">Amount</th> 
+                        </tr>
+                        <c:forEach items="#{plane.loadout}" var="item">
+                            <tr>
+                                <td>#{item.name}</td>
+                                <td>#{item.count}</td>
+                            </tr>
+                        </c:forEach>   
+                    </table>
+                </h:form>
+            </div>  
+            <div class="col-md-8">
+                <img src="/SMWeb/clodwar/templates/background/images/#{plane.type}/#{ClodwarBean.randomPick()}.jpg" alt="Responsive image" class="img-responsive" style="margin-bottom: 15px; float: right"/>
+            </div>  
+            <div class="col-md-10 col-md-offset-1">
+                <h3>Sorties</h3>
+                <h:form>
+                    <table class="table table-striped clicktable stripe sort table-bordered" id="sorties" style="background-color: rgba(255,255,255,0.6)">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style="text-align: center">Date</th>
+                            <th>Type</th> 
+                            <th>Result</th>
+                            <th>Virt. pilot</th>
+                            <th style="text-align: right">Air Kills</th> 
+                            <th style="text-align: right">Ground Kills</th>
+                            <th style="text-align: center">Fly-Time</th>                                
+                        </tr>
+                        <c:forEach items="${ClodwarStatisticsBean.getPlaneSorties(plane.name, plane.owner)}" var="sortie">
+                            <tr class='clickable-row' data-href='/SMWeb/clodwar/statistics/sortie.jsf?id=#{sortie.id}'>                              
+                                <td>#{sortie.started.toLocaleString()}</td>
+                                <td>#{sortie.typeRed}</td>
+                                <td>#{sortie.pilotStats.status}</td>
+                                <td><a href="/SMWeb/clodwar/profile/vpilot.jsf?name=#{sortie.pilotStats.getvPilot().urlName}">#{sortie.pilotStats.getvPilot().name}</a></td>
+                                <td>#{sortie.pilotStats.planeKills}</td>   
+                                <td>#{sortie.pilotStats.groundKills}</td>   
+                                <td>#{sortie.pilotStats.flightTime}</td>   
+                            </tr>
+                        </c:forEach>                                            
+                    </table>
+                </h:form> 
+            </div>            
+        </div>
+    </ui:define>   
+    
+</ui:composition>

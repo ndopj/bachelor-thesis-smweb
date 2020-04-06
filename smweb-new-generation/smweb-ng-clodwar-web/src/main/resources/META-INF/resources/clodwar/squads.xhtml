@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Squads
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="#{request.contextPath}/clodwar/templates/background/css/full3.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">
+        <style> 
+            .table.squad td:last-child, table.squad td:nth-child(3){
+                text-align: center;
+            }​
+        </style>
+        <style>
+            .table.squad td:nth-child(2) {
+                text-align: left;
+            }​
+        </style>            
+    </ui:define>
+    
+    <ui:define name="body">
+        <script>
+            
+            function Clear(){
+                document.getElementById("loginInput").value = "";
+            }
+            
+        </script>        
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.7); margin-top: 50px; min-height: 80vh">
+            <div class="col-lg-12">
+                <h1 class="text-center" style="margin-bottom: 25px">ClodWar Squads</h1>   
+            </div>  
+            <div class="col-lg-12">
+                <form action="#{request.contextPath}/clodwar/squads.xhtml" method="GET" class="form-inline" style="float: right; margin-right: 15px; margin-bottom: 10px">
+                    <label>Squad name: </label>
+                    <input type="text" class="form-control" name="name" id="loginInput" value="#{param['name']}"/>
+                    <button type="button" onclick="Clear();" class="btn btn-danger" style="margin-left: -4px">x</button>
+                    <button type="submit" class="btn btn-default" style="margin-left: 10px">Show</button> 
+                </form>
+            </div>
+            <c:if test="#{param['name'] == null}" >
+                <c:set value="${ClodwarStatisticsBean.listOfAllSquadrons}" var="squads"></c:set>
+            </c:if> 
+            <c:if test="#{param['name'] != null}" >
+                <c:set value="${ClodwarStatisticsBean.getSquadronsByPartialName(param['name'])}" var="squads"></c:set>
+                </c:if> 
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <h:form>
+                        <table class="table table-striped stripe squad clicktable table-bordered" id="squads" style="background-color: rgba(255,255,255,0.6); text-align: right; margin-bottom: 0px">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                                <th style="text-align: right">#</th>
+                                <th>Squad Name</th> 
+                                <th style="text-align: center">Side</th>
+                                <th style="text-align: right">Players</th>
+                                <th style="text-align: right">Air Kills</th> 
+                                <th style="text-align: right">Ground Kills</th>
+                                <th style="text-align: right">K/D Ratio</th>
+                                <th style="text-align: right">No. of Sorties*</th>
+                                <th style="text-align: center">Flight Time</th>                                
+                            </tr>
+                            <c:set value="1" var="enum"></c:set>
+                            <c:forEach items="#{squads}" var="squad">
+                                <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/statistics/squad-stats.jsf?name=#{squad.name}'>
+                                    <td>#{enum}</td>
+                                    <td>#{squad.name}</td>      
+                                    <c:if test="${squad.side == 'BLUE'}" >
+                                       <td><img src="#{request.contextPath}/clodwar/templates/background/images/Allies.png" style="max-height: 20px; max-width: 20px"/></td>
+                                    </c:if> 
+                                    <c:if test="${squad.side == 'RED'}" >
+                                       <td><img src="#{request.contextPath}/clodwar/templates/background/images/Axis.png" style="max-height: 20px; max-width: 20px"/></td>
+                                    </c:if>  
+                                    <td>#{squad.numOfPlayers}</td>
+                                    <td>#{squad.airKills}</td>
+                                    <td>#{squad.groundKills}</td>
+                                    <td>#{squad.kdRatio}</td> 
+                                    <td>#{squad.sortiesLast} / #{squad.sortiesAll}</td>
+                                    <td>#{squad.flightTime}</td>
+                                </tr>
+                                <c:set value="#{enum + 1}" var="enum"></c:set>
+                            </c:forEach>                                                    
+                        </table>
+                        <p style="text-align: right">* last 14 days / total</p>
+                    </h:form> 
+                </div>
+            </div>
+        </div>        
+    </ui:define>   
+    
+</ui:composition>
+</html>
+

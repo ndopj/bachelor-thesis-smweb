@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Sortie details
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="/SMWeb/clodwar/templates/background/css/full.css" rel="stylesheet"/>
+    </ui:define>
+    
+     <ui:define name="head">
+        <style>
+            .table.firstleft td:first-child {
+                text-align: left;
+            }
+        </style>
+        <style>
+            .table.pilot td:nth-child(1), table.pilot td:nth-child(6), table.pilot td:nth-child(7), table.pilot td:nth-child(8) {
+                text-align: right;
+            }​
+        </style>
+        <style>
+            .table.pilot td:last-child, .table.pilot td:nth-child(4), table.battlelog td:first-child {
+                text-align: center;
+            }​
+        </style>
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.6); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+            <div class="col-lg-12">
+                <c:if test="#{ClodwarStatisticsBean.getSortieById(param['id']) == null}" >
+                    <h1 class="text-center" style="color: red">Sortie with Id: #{param['id']} does not exist !</h1>
+                    <script>
+                        window.stop();
+                    </script> 
+                </c:if>
+                <h1 class="text-center" style=" margin-bottom: 20px">Sortie details </h1>
+            </div> 
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h:form>
+                        <c:set value="${ClodwarStatisticsBean.getSortieById(param['id'])}" var="sort"></c:set>
+                        <h3 style="margin-top: 0px" class="text-center">Sortie sumary</h3>
+                        <table class="table table-striped stripe firstleft table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                            <tr>
+                                <td style="width: 22%">Sortie id: </td>
+                                <td>#{sort.id}</td>
+                            </tr>
+                            <tr>
+                                <td>Based on order: </td>
+                                <c:if test="${AuthenticationBean.getIdentityLogin() == null}" >
+                                    <td>-</td>
+                                </c:if>
+                                <c:if test="${AuthenticationBean.identity.side == 'RED'}" >
+                                    <c:if test="${sort.orderRed != null}" >
+                                        <td><a href="/SMWeb/clodwar/pilot/order.jsf?id=#{sort.orderRed}">#{sort.orderRed}</a></td>
+                                    </c:if>
+                                    <c:if test="${sort.orderRed == null}" >
+                                        <td>-</td>
+                                    </c:if>                                    
+                                </c:if>
+                                <c:if test="${AuthenticationBean.identity.side == 'BLUE'}" >
+                                    <c:if test="${sort.orderBlue != null}" >
+                                        <td><a href="/SMWeb/clodwar/pilot/order.jsf?id=#{sort.orderBlue}">#{sort.orderBlue}</a></td>
+                                    </c:if>
+                                    <c:if test="${sort.orderBlue == null}" >
+                                        <td>-</td>
+                                    </c:if>
+                                </c:if>
+                            </tr>
+                            <tr>
+                                <td>Sortie started: </td>
+                                <td>#{sort.started.toLocaleString()}</td>
+                            </tr>
+                            <tr>
+                                <td>Sortie ended: </td>
+                                <td>#{sort.ended.toLocaleString()}<c:if test="#{sort.ended == null}">-</c:if></td>
+                            </tr>
+                            <tr>
+                                <td>Sortie duration: </td>
+                                <td>#{sort.duration}</td>
+                            </tr>
+                            <c:if test="${AuthenticationBean.identity.side == 'RED'}" >
+                                <tr>
+                                    <td>Mission type: </td>
+                                    <td>#{sort.typeRed}</td>
+                                </tr>
+                                <tr>
+                                    <td>Assignment: </td>
+                                    <td>#{sort.assignmentRed}</td>
+                                </tr>
+                            </c:if>  
+                            <c:if test="${AuthenticationBean.identity.side == 'BLUE'}" >
+                                <tr>
+                                    <td>Mission type: </td>
+                                    <td>#{sort.typeBlue}</td>
+                                </tr>
+                                <tr>
+                                    <td>Assignment: </td>
+                                    <td>#{sort.assignmentBlue}</td>
+                                </tr>
+                            </c:if>
+                        </table>
+                    </h:form> 
+                </div>
+                 <div class="col-md-6">
+                    <h:form>
+                        <h3 style="margin-top: 0px" class="text-center">Side sumary</h3>
+                        <table class="table table-striped stripe firstleft table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                            <tr>
+                                <th></th>
+                                <th style="color: blue; min-width: 70px; text-align: right">Blue</th>
+                                <th style="color: red; min-width: 70px; text-align: right">Red</th>
+                            </tr>                           
+                            <tr>
+                                <td>Planes (RTB / Damaged / Destroyed): </td>
+                                <td>#{sort.blueStats.planesRTB} / #{sort.blueStats.planesDamaged} / #{sort.blueStats.planesDestroyed}</td>
+                                <td>#{sort.redStats.planesRTB} / #{sort.redStats.planesDamaged} / #{sort.redStats.planesDestroyed}</td>
+                            </tr>
+                            <tr>
+                                <td>Pilots (RTB / MIA / KIA): </td>
+                                <td>#{sort.blueStats.pilotsRTB} / #{sort.blueStats.pilotsMIA} / #{sort.blueStats.pilotsKIA}</td>
+                                <td>#{sort.redStats.pilotsRTB} / #{sort.redStats.pilotsMIA} / #{sort.redStats.pilotsKIA}</td>
+                            </tr>
+                            <tr>
+                                <td>Planes shot down: </td>
+                                <td>#{sort.redStats.planesDestroyed}</td>
+                                <td>#{sort.blueStats.planesDestroyed}</td>
+                            </tr>
+                            <tr>
+                                <td>Destroyed ground targets: </td>
+                                <td>#{sort.blueStats.groundKills}</td>
+                                <td>#{sort.redStats.groundKills} </td>
+                            </tr>
+                            <tr>
+                                <td>Fligh Time per pilot (Average / Max): </td>
+                                <td>#{sort.blueStats.flightTimeAvg} / #{sort.blueStats.flightTimeMax}</td>
+                                <td>#{sort.redStats.flightTimeAvg} / #{sort.redStats.flightTimeMax}</td>
+                            </tr>
+                        </table>
+                    </h:form> 
+                </div>
+                <div class="col-md-10 col-md-offset-1">
+                    <h:form>
+                        <h3>List of Pilots</h3>
+                        <table class="table table-striped stripe pilot clicktable table-bordered" id="pilots" style="background-color: rgba(255,255,255,0.6)">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                                <th style=" width: 3%; text-align: right">#</th>
+                                <th>Player Name</th>  
+                                <th style=" width: 12%">Virtual pilot</th>
+                                <th style="width: 5%; text-align: center">Side</th>
+                                <th style="width: 15%">Plane</th>
+                                <th style=" width: 10%; text-align: right">Pilot Kills</th>
+                                <th style=" width: 10%; text-align: right">Plane Kills</th> 
+                                <th style=" width: 11%; text-align: right">Ground Kills</th>
+                                <th style=" width: 6%">Status</th>
+                                <th style=" width: 10%; text-align: center">Fly-Time</th>
+                            </tr>
+                            <c:set value="1" var="enum"></c:set>
+                            <c:forEach items="#{sort.pilots}" var="pilot">
+                                <tr class='clickable-row' data-href='/SMWeb/clodwar/statistics/pilot-stats.jsf?login=#{pilot.player.login}'>                              
+                                    <td>#{enum}</td>
+                                    <td>#{pilot.player.login}</td> 
+                                    <td><a href="/SMWeb/clodwar/profile/vpilot.jsf?name=#{pilot.vPilot.urlName}">#{pilot.vPilot.name}</a></td>
+                                    <c:if test="${pilot.player.side == 'BLUE'}" >
+                                       <td><img src="/SMWeb/clodwar/templates/background/images/Allies.png" style="max-height: 20px; max-width: 20px"/></td>
+                                    </c:if> 
+                                    <c:if test="${pilot.player.side == 'RED'}" >
+                                       <td><img src="/SMWeb/clodwar/templates/background/images/Axis.png" style="max-height: 20px; max-width: 20px"/></td>
+                                    </c:if>  
+                                    <td><a href="/SMWeb/clodwar/profile/plane.jsf?name=#{pilot.plane.urlName}">#{pilot.plane.name}</a></td>
+                                    <td>#{pilot.pilotKills}</td>
+                                    <td>#{pilot.planeKills}</td>
+                                    <td>#{pilot.groundKills}</td>
+                                    <td>#{pilot.status}</td>
+                                    <td>#{pilot.flightTime}</td>
+                                </tr>
+                                <c:set value="#{enum + 1}" var="enum"></c:set>
+                            </c:forEach>                                             
+                        </table>
+                    </h:form> 
+                </div>       
+                <div class="col-md-10 col-md-offset-1">
+                    <h3>Battle Log</h3>
+                    <h:form>
+                        <table class="table table-striped stripe battlelog table-bordered" id="battlelog" style="background-color: rgba(255,255,255,0.6)">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                                <th style=" width: 10%; text-align: center">Time</th>
+                                <th style=" width: 20%">Event</th>
+                                <th style=" width: 15%">Pilot</th>   
+                                <th>Log</th>                                 
+                            </tr>
+                            <c:forEach items="#{sort.battleLog}" var="log">
+                                <tr>
+                                    <td>#{log.timeOfEvent}</td>
+                                    <td>#{log.event}</td>
+                                    <td>#{log.playerName}</td>
+                                    <td>#{log.logEntry}</td>                                    
+                                </tr>
+                            </c:forEach>                                                      
+                        </table>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>   
+    
+</ui:composition>

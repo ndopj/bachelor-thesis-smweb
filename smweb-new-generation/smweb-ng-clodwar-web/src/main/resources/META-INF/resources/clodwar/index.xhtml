@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">
+        ClodWar
+    </ui:define>
+    
+    <ui:define name="head">        
+        <style type="text/css">
+            .table.secondleft td:nth-child(2), table.topten td:nth-child(2) {
+                text-align: left;
+            }​
+        </style>
+        <style type="text/css">
+            .table.secondleft td:nth-child(3), table.topten td:last-child, table.topten td:nth-child(3) {
+                text-align: center;
+            }
+        </style>
+        <style type="text/css">
+            .table.secondright td:nth-child(2) {
+                text-align: right;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="#{request.contextPath}/clodwar/templates/background/css/full3.css" rel="stylesheet"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.7); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+            <div class="col-lg-12">
+                <h1 class="text-center">ClodWar</h1>  
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="list-inline text-center" style="font-size: 24px; margin-bottom: 0px">                    
+                        <li>Currently online: </li>                    
+                        <li style="color: red; margin-left: -5px">#{ClodwarStatisticsBean.getOnlinePlayersCount('Axis')}</li>
+                        <li style="margin-left: -8px; margin-right: -10px">vs.</li>
+                        <li style="color: blue">#{ClodwarStatisticsBean.getOnlinePlayersCount('Allies')}</li>
+                    </ul>
+                    <p class="text-center"><a href="online_now.xhtml" style="color: black">(Show online Players)</a></p>
+  
+                </div>                
+                <div class="col-md-11" style="margin-left: 48.5px; margin-right: 48.5px">    
+                    <svg viewBox="0 0 2747 2363" version="1.1" class="svg-content"
+                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <image xlink:href="#{request.contextPath}/clodwar/templates/background/mapCOD.jpg" x="0" y="0" height="100%" width="100%"/>
+                        <c:forEach items="#{ClodwarProfileBean.listOfAllSectorsWithCalculatedFrontline}" var="sector">    
+                            <c:if test="#{sector.side == 'RED'}">
+                                <c:if test="#{sector.heatSide == 0}">
+                                    <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,0,0.2); stroke: rgba(0,0,0,1); stroke-width: 1"/>
+                                </c:if>
+                                <c:if test="#{sector.heatSide == 2}">
+                                    <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,0,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/>
+                                </c:if>
+                                <c:if test="#{sector.heatSide == 1}">
+                                    <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(0,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/>
+                                </c:if>
+                                <c:if test="#{sector.heatSide == 3}">
+                                    <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/>
+                                </c:if>
+                                <c:if test="#{sector.leftFrontline}">
+                                    <line x1="#{sector.getxCoordiante() + 0.1}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 0.1}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(255,0,0);stroke-width:5" />
+                                </c:if>
+                                <c:if test="#{sector.rightFrontline}">
+                                    <line x1="#{sector.getxCoordiante() + 2.757}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 2.757}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(255,0,0);stroke-width:5" />
+                                </c:if>
+                                <c:if test="#{sector.upFrontline}">
+                                    <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 0.1}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 0.1}%" style="stroke:rgb(255,0,0);stroke-width:5" />
+                                </c:if>
+                                <c:if test="#{sector.downFrontline}">
+                                    <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 3.23}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 3.23}%" style="stroke:rgb(255,0,0);stroke-width:5" />
+                                </c:if>
+                            </c:if>
+                            <c:if test="#{sector.side == 'BLUE'}">
+                                <c:if test="#{sector.heatSide == 0}">
+                                    <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(0,0,255,0.2); stroke: rgba(0,0,0,1); stroke-width: 1"/>
+                                </c:if>
+                                <c:if test="#{sector.heatSide == 1}">
+                                    <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(0,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/>
+                                </c:if>
+                                <c:if test="#{sector.heatSide == 2}">
+                                    <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,0,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/>
+                                </c:if>
+                                <c:if test="#{sector.heatSide == 3}">
+                                    <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/>
+                                </c:if>
+                                <c:if test="#{sector.leftFrontline}">
+                                    <line x1="#{sector.getxCoordiante() + 0.1}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 0.1}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(0,0,255);stroke-width:5" />
+                                </c:if>
+                                <c:if test="#{sector.rightFrontline}">
+                                    <line x1="#{sector.getxCoordiante() + 2.757}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 2.757}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(0,0,255);stroke-width:5" />
+                                </c:if>
+                                <c:if test="#{sector.upFrontline}">
+                                    <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 0.1}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 0.1}%" style="stroke:rgb(0,0,255);stroke-width:5" />
+                                </c:if>
+                                <c:if test="#{sector.downFrontline}">
+                                    <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 3.23}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 3.23}%" style="stroke:rgb(0,0,255);stroke-width:5" />
+                                </c:if>
+                            </c:if>
+                            <c:if test="#{sector.side == 'NONE'}">
+                                <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(0,0,0,0); stroke: rgba(0,0,0,1); stroke-width: 1"/>
+                            </c:if>                            
+                        </c:forEach>
+                    </svg>
+                </div>
+            </div>
+            <c:set value="#{ClodwarStatisticsBean.getSideStats('Axis')}" var="axis"></c:set>
+            <c:set value="#{ClodwarStatisticsBean.getSideStats('Allies')}" var="allies"></c:set>
+            <div class="row">
+                <div class=" col-md-5 col-md-offset-1" style=" margin-top: 20px">
+                    <label class="text-center">Planes shot down: </label>
+                    <div class="progress" style="background-color: rgba(0,0,0,0)">
+                        <div class="progress-bar progress-bar-primary" role="progressbar" style="width: #{(allies.planesShotDown)/(allies.planesShotDown + axis.planesShotDown)*100}%">
+                            #{allies.planesShotDown}
+                        </div>
+                        <div class="progress-bar progress-bar-danger" role="progressbar" style="width: #{(axis.planesShotDown)/(allies.planesShotDown + axis.planesShotDown)*100}%">
+                          #{axis.planesShotDown}
+                        </div>
+                    </div>
+                    <label class="text-center">Available planes </label>
+                     <div class="progress" style="background-color: rgba(0,0,0,0)">
+                        <div class="progress-bar progress-bar-primary" role="progressbar" style="width: #{(allies.availablePlanes)/(allies.availablePlanes + axis.availablePlanes)*100}%">
+                          #{allies.availablePlanes}
+                        </div>
+                        <div class="progress-bar progress-bar-danger" role="progressbar" style="width: #{(axis.availablePlanes)/(allies.availablePlanes + axis.availablePlanes)*100}%">
+                          #{axis.availablePlanes}
+                        </div>
+                    </div>
+                    <label class="text-center">Destroyed ground units: </label>
+                     <div class="progress" style="background-color: rgba(0,0,0,0)">
+                        <div class="progress-bar progress-bar-primary" role="progressbar" style="width: #{(allies.groundKills)/(allies.groundKills + axis.groundKills)*100}%">
+                          #{allies.groundKills}
+                        </div>
+                        <div class="progress-bar progress-bar-danger" role="progressbar" style="width: #{(axis.groundKills)/(allies.groundKills + axis.groundKills)*100}%">
+                          #{axis.groundKills}
+                        </div>
+                    </div>
+                </div>
+                <div class=" col-md-5" style=" margin-top: 20px">
+                    <label class="text-center">Lost pilots: </label>
+                    <div class="progress" style="background-color: rgba(0,0,0,0)">
+                        <div class="progress-bar progress-bar-primary" role="progressbar" style="width: #{(allies.lostPilots)/(allies.lostPilots + axis.lostPilots)*100}%">
+                          #{allies.lostPilots}
+                        </div>
+                        <div class="progress-bar progress-bar-danger" role="progressbar" style="width: #{(axis.lostPilots)/(allies.lostPilots + axis.lostPilots)*100}%">
+                          #{axis.lostPilots}
+                        </div>
+                    </div>
+                    <label class="text-center">Alive pilots: </label>
+                     <div class="progress" style="background-color: rgba(0,0,0,0)">
+                        <div class="progress-bar progress-bar-primary" role="progressbar" style="width: #{(allies.alivePilots)/(allies.alivePilots + axis.alivePilots)*100}%">
+                          #{allies.alivePilots}
+                        </div>
+                        <div class="progress-bar progress-bar-danger" role="progressbar" style="width: #{(axis.alivePilots)/(allies.alivePilots + axis.alivePilots)*100}%">
+                          #{axis.alivePilots}
+                        </div>
+                    </div>
+                    <label class="text-center">Number of registered players: </label>
+                     <div class="progress" style="background-color: rgba(0,0,0,0)">
+                        <div class="progress-bar progress-bar-primary" role="progressbar" style="width: #{(allies.registeredPlayers)/(allies.registeredPlayers + axis.registeredPlayers)*100}%">
+                          #{allies.registeredPlayers}
+                        </div>
+                        <div class="progress-bar progress-bar-danger" role="progressbar" style="width: #{(axis.registeredPlayers)/(allies.registeredPlayers + axis.registeredPlayers)*100}%">
+                          #{axis.registeredPlayers}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">            
+                <h:form>
+                    <div class="col-md-5 col-md-offset-1">
+                        <h3 class="text-center" style="color: red; margin-top: 0px"><img src="#{request.contextPath}/clodwar/templates/background/images/Axis.png" style="max-height: 25px; max-width: 25px; margin-top: -5px"/> Axis</h3>
+                        <table class="table table-striped red secondright table-bordered" style="background-color: rgba(255,0,0,0.075)"> 
+                            <tr>
+                                <td>K/D Ratio Planes:</td>
+                                <td class="text-center">#{axis.kdRatioPlanes}</td>
+                            </tr>
+                            <tr>
+                                <td>K/D Ratio Pilots: </td>
+                                <td class="text-center">#{axis.kdRatioPilots}</td>
+                            </tr>
+                            <tr>
+                                <td>Pilots (Alive/Born): </td>
+                                <td class="text-center">#{axis.alivePilots}/#{axis.alivePilots + axis.lostPilots}</td>
+                            </tr>
+                            <tr>
+                                <td>Planes (Available/Created): </td>
+                                <td class="text-center">#{axis.availablePlanes}/#{allies.planesShotDown + axis.availablePlanes}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </h:form> 
+                <h:form>
+                    <div class="col-md-5">
+                        <h3 class="text-center" style="color: blue; margin-top: 0px"><img src="#{request.contextPath}/clodwar/templates/background/images/Allies.png" style="max-height: 25px; max-width: 25px; margin-top: -5px"/> Allies</h3>
+                        <table class="table table-striped blue secondright table-bordered" style="background-color: rgba(0,0,255,0.075)">                        
+                            <tr>
+                                <td>K/D Ratio Planes:</td>
+                                <td class="text-center">#{allies.kdRatioPlanes}</td>
+                            </tr>
+                            <tr>
+                                <td>K/D Ratio Pilots: </td>
+                                <td class="text-center">#{allies.kdRatioPilots}</td>
+                            </tr>
+                            <tr>
+                                <td>Pilots (Alive/Born): </td>
+                                <td class="text-center">#{allies.alivePilots}/#{allies.alivePilots + allies.lostPilots}</td>
+                            </tr>
+                            <tr>
+                                <td>Planes (Available/Created): </td>
+                                <td class="text-center">#{allies.availablePlanes}/#{allies.availablePlanes + axis.planesShotDown}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </h:form>
+            </div>
+            <div class="row">
+                <div class="col-md-4 table-responsive" style="margin-right: -15px; margin-left: 15px">
+                    <label style="margin-bottom: 0px; margin-top: 3px; min-width: 100%; text-align: center">Top 10 Aircraft kills in streak</label>
+                    <table class="table table-striped stripe secondleft clicktable table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right" id="topkills"> 
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style=" width: 10%; text-align: right">#</th>
+                            <th>Player</th>
+                            <th style=" width: 15%; text-align: center">Side</th>
+                            <th style="text-align: right">Kills</th>
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="${ClodwarStatisticsBean.topKills}" var="pilot">
+                            <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/statistics/pilot-stats.jsf?login=#{pilot.login}'>
+                                <td>#{enum}</td>
+                                <td>#{pilot.login}</td>              
+                                <c:if test="#{pilot.side == 'BLUE'}" >
+                                   <td><img src="#{request.contextPath}/clodwar/templates/background/images/Allies.png" style="max-height: 20px; max-width: 20px"/></td>
+                                </c:if> 
+                                <c:if test="#{pilot.side == 'RED'}" >
+                                   <td><img src="#{request.contextPath}/clodwar/templates/background/images/Axis.png" style="max-height: 20px; max-width: 20px"/></td>
+                                </c:if>                                
+                                <td>#{pilot.kills}</td>                                
+                            </tr>  
+                            <c:set value="#{enum + 1}" var="enum"></c:set>
+                        </c:forEach>                         
+                    </table>
+                </div>
+                <div class="col-md-4 table-responsive">
+                    <label style="margin-bottom: 0px; margin-top: 3px; min-width: 100%; text-align: center">Top 10 Ground Target kills in streak</label>
+                    <table class="table table-striped stripe secondleft clicktable table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right" id="topground"> 
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style=" width: 10%; text-align: right">#</th>
+                            <th>Player</th>
+                            <th style=" width: 15%; text-align: center">Side</th>
+                            <th style=" width: 35%; text-align: right">Ground Targets</th>
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="${ClodwarStatisticsBean.topGroundKills}" var="pilot">
+                            <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/statistics/pilot-stats.jsf?login=#{pilot.login}'>
+                                <td>#{enum}</td>
+                                <td>#{pilot.login}</td>              
+                                <c:if test="#{pilot.side == 'BLUE'}" >
+                                   <td><img src="#{request.contextPath}/clodwar/templates/background/images/Allies.png" style="max-height: 20px; max-width: 20px"/></td>
+                                </c:if> 
+                                <c:if test="#{pilot.side == 'RED'}" >
+                                   <td><img src="#{request.contextPath}/clodwar/templates/background/images/Axis.png" style="max-height: 20px; max-width: 20px"/></td>
+                                </c:if>                                
+                                <td>#{pilot.groundKills}</td>                                
+                            </tr>  
+                            <c:set value="#{enum + 1}" var="enum"></c:set>
+                        </c:forEach>                         
+                    </table>
+                </div>
+                <div class="col-md-4 table-responsive" style="margin-right: 10px; margin-left: -15px">
+                    <label style="margin-bottom: 0px; margin-top: 3px; min-width: 100%; text-align: center">Top 10 Flight-times in last 14 days</label>
+                    <table class="table table-striped stripe topten clicktable table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right" id="toptime"> 
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style=" width: 10%; text-align: right">#</th>
+                            <th>Player</th>
+                            <th style=" width: 15%; text-align: center">Side</th>
+                            <th style="text-align: center">Time (hh:mm)</th>
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="${ClodwarStatisticsBean.topFlightTime}" var="pilot">
+                            <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/statistics/pilot-stats.jsf?login=#{pilot.login}'>
+                                <td>#{enum}</td>
+                                <td>#{pilot.login}</td>              
+                                <c:if test="#{pilot.side == 'BLUE'}" >
+                                   <td><img src="#{request.contextPath}/clodwar/templates/background/images/Allies.png" style="max-height: 20px; max-width: 20px"/></td>
+                                </c:if> 
+                                <c:if test="#{pilot.side == 'RED'}" >
+                                   <td><img src="#{request.contextPath}/clodwar/templates/background/images/Axis.png" style="max-height: 20px; max-width: 20px"/></td>
+                                </c:if>                                
+                                <td>#{pilot.flighTime}</td>                                
+                            </tr>  
+                            <c:set value="#{enum + 1}" var="enum"></c:set>
+                        </c:forEach>                         
+                    </table>
+                </div>
+            </div>
+        </div>    
+    </ui:define>
+
+</ui:composition>
+</html>

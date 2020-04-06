@@ -1,0 +1,740 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Current state
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="#{request.contextPath}/clodwar/templates/background/css/full.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">
+        
+        <style>
+            .map {
+                height: 90vh;
+                width: 100%;
+                float: left;
+            }
+            .ol-rotate {
+                top: 40px;
+            }
+            .ol-mouse-position{
+                right: 40px;
+            }
+            .ol-scale-line{
+                left: unset;
+                right: 8px;
+            }
+            label.legend{
+                margin-bottom: 5px;   
+            }
+            input.lege{
+                margin-top: 13px;
+            }
+            div.notes{
+                margin-bottom: 15px;
+                margin-top: 15px;
+            }
+            .table.sort td:first-child, table.sort td:last-child, table.order td:last-child, table.order td:first-child{
+                text-align: center;
+            }​
+        </style>
+        <style>                        
+            .table.sort td:nth-child(5){
+                text-align: right;
+            }​ 
+        </style>
+        <style>
+      .ol-popup {
+        position: absolute;
+        background-color: white;
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+        min-width: 280px;
+      }
+      .ol-popup:after, .ol-popup:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+      }
+      .ol-popup:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+      }
+      .ol-popup:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+      }
+      .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        right: 8px;
+      }
+      .ol-popup-closer:after {
+        content: "✖";
+      }
+    </style>
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="col-lg-12">
+            <h1 class="text-center">Current state of the game</h1>
+        </div>
+        <div class="row">
+            <div class="col-xs-11" style="margin-left: -15px">
+                <div id="map" class="map" style="background-color: rgba(255,255,255,0.7)"></div>
+                <div id="popup" class="ol-popup">
+                    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                    <div id="popup-content"></div>
+                </div>
+                <!--embed src="/SMWeb/clodwar/pilot/mapLayers/current_state-sectors-svg-image.jsf" width="2747px" height="2363px" type="image/svg+xml;utf8"/-->
+            </div>
+            <div class="col-xs-1" style="background-color: rgba(255,255,255,0.7); min-width: 9.5%; margin-right: 0px">
+                <div class="checkbox">
+                    <h4 class="text-center">Legend</h4>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkSectors" checked="checked" onchange="sectorsSVG(this)" class="lege"><img src="#{request.contextPath}/clodwar/templates/background/images/icons/sectors.png" alt="..." height="35px" width="35px" class="img-thumbnail"/> Sectors</input>
+                    </label>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkAirfields" checked="checked" onchange="airfields(this)" class="lege"><img src="#{request.contextPath}/clodwar/templates/background/images/icons/airfield.png" alt="..." height="35px" width="35px" class="img-thumbnail"/> Airfields</input>
+                    </label>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkResources" checked="checked" onchange="resources(this)" class="lege"><img src="#{request.contextPath}/clodwar/templates/background/images/icons/warehouse.png" alt="..." height="35px" width="35px" class="img-thumbnail"/> Resources</input>
+                    </label>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkMissions" onchange="missions(this)" class="lege"><img src="#{request.contextPath}/clodwar/templates/background/images/icons/sortie.png" height="35px" width="35px" alt="..." class="img-thumbnail"/> Active missions</input>
+                    </label>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkRecon" onchange="recon(this)" class="lege"><img src="#{request.contextPath}/clodwar/templates/background/images/icons/camera.png" alt="..." height="35px" width="35px" class="img-thumbnail"/> Recon</input>
+                    </label>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkHeat" onchange="sectorsSVGHeat(this)" class="lege"><img src="#{request.contextPath}/clodwar/templates/background/images/icons/sectorsHeat.png" alt="..." height="35px" width="35px" class="img-thumbnail"/> Activity Heatmap</input>
+                    </label>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkFrontline" onchange="frontline(this)" class="lege"><img src="#{request.contextPath}/clodwar/templates/background/images/icons/Frontline.png" alt="..." height="35px" width="35px" class="img-thumbnail"/> Front line</input>
+                    </label>
+                </div>
+            </div>
+            <div class="col-xs-12" style=" margin-top: 10px; background-color: rgba(255,255,255,0.7)">                                
+                <div class="col-xs-3 notes" style=" width: 22%">
+                    <img src="#{request.contextPath}/clodwar/templates/background/images/icons/extent.png" width="40px" height="40px" alt="..." class="img-thumbnail"> Zoom out and center map</img>
+                </div>
+                <div class="col-xs-3 notes" style=" width: 20%">
+                    <img src="#{request.contextPath}/clodwar/templates/background/images/icons/fullscreen.png" width="40px" height="40px" alt="..." class="img-thumbnail"> Open map in fullscreen</img>
+                </div>
+                <div class="col-xs-2 notes" style=" width: 18%">
+                    <img src="#{request.contextPath}/clodwar/templates/background/images/icons/rotation.png" width="40px" height="40px" alt="..." class="img-thumbnail"> Reset map rotation</img>
+                </div>
+                <div class="col-xs-2 notes">
+                    <img src="#{request.contextPath}/clodwar/templates/background/images/icons/minimap.png" width="40px" height="40px" alt="..." class="img-thumbnail"> Open minimap</img>
+                </div>
+                <div class="col-xs-2 notes" style=" width: 22%">
+                    <img src="#{request.contextPath}/clodwar/templates/background/images/icons/rotation2.png" width="40px" height="40px" alt="..." class="img-thumbnail"> Hold Alt and Drag to Rotate</img>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="background-color: rgba(255,255,255,0.7); margin-bottom: 30px; margin-top: 10px">
+            <div class="col-md-6">
+                <h3>Active Sorties</h3>
+                <h:form>
+                    <table class="table table-striped clicktable sort stripe table-bordered" id="sorties" style="background-color: rgba(255,255,255,0.6)">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th>Id</th>
+                            <th style="text-align: center">Started</th>
+                            <th>Type</th> 
+                            <th>Target sector</th>
+                            <th style="text-align: right">Players online</th> 
+                            <th style="text-align: left">Based on order</th>
+                            <th style="text-align: center">Running Time</th>                                
+                        </tr>
+                        <c:forEach items="${ClodwarStatisticsBean.activeSorties}" var="sortie">
+                            <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/statistics/sortie.jsf?id=#{sortie.id}'>
+                                <td>#{sortie.id}</td>
+                                <td>#{sortie.started.toLocaleString().split(' ', 2)[1]}</td>                                
+                                <c:if test="${AuthenticationBean.identity.side == 'RED'}" >
+                                    <td>#{sortie.typeRed}</td> 
+                                    <td>#{sortie.sectorRed}</td>
+                                </c:if>
+                                <c:if test="${AuthenticationBean.identity.side == 'BLUE'}" >
+                                    <td>#{sortie.typeBlue}</td> 
+                                    <td>#{sortie.sectorBlue}</td>
+                                </c:if> 
+                                <td>#{sortie.pilots.size()}</td> 
+                                <c:if test="${AuthenticationBean.identity.side == 'RED'}" >
+                                    <td><a href="#{request.contextPath}/clodwar/pilot/order.jsf?id=#{sortie.orderRed}">#{sortie.orderRed}</a><c:if test="#{sortie.orderRed == null}">-</c:if></td>
+                                </c:if>
+                                <c:if test="${AuthenticationBean.identity.side == 'BLUE'}" >
+                                    <td><a href="#{request.contextPath}/clodwar/pilot/order.jsf?id=#{sortie.orderBlue}">#{sortie.orderBlue}</a><c:if test="#{sortie.orderBlue == null}">-</c:if></td>
+                                </c:if>                                 
+                                <td>#{sortie.duration}</td>          
+                            </tr>                       
+                        </c:forEach>                                                 
+                    </table>
+                </h:form> 
+            </div>
+            <div class="col-md-6">
+                <h3>Promoted orders</h3>
+                <h:form>
+                    <table class="table table-striped clicktable order stripe table-bordered" id="orders" style="background-color: rgba(255,255,255,0.6)">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th>Id</th>
+                            <th style="text-align: center">Active from</th>
+                            <th>Type</th> 
+                            <th>Issued by</th>
+                            <th>Target sector</th>
+                            <th>Flown by Sortie</th>
+                            <th style="text-align: center">Active until</th>                                                           
+                        </tr>                        
+                        <c:forEach items="${ClodwarPilotBean.activeOrders}" var="order">
+                            <c:if test="${AuthenticationBean.identity.side == order.side}" >
+                                <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/pilot/order.jsf?id=#{order.id}'>
+                                    <td>#{order.id}</td>
+                                    <td>#{order.start.toLocaleString()}</td>
+                                    <td>#{order.type}</td>    
+                                    <td><a href="#{request.contextPath}/clodwar/statistics/pilot-stats.jsf?login=#{order.issuedBy}">#{order.issuedBy}</a></td>
+                                    <td>#{order.target}</td>
+                                    <td>
+                                        <c:set value="0" var="control"></c:set>
+                                        <c:forEach items="${order.flownBySortiesImm}" var="sortie">
+                                            <a href="#{request.contextPath}/clodwar/statistics/sortie.jsf?id=#{sortie.id}">#{sortie.id}</a>,
+                                            <c:set value="1" var="control"></c:set>
+                                        </c:forEach>   
+                                        <c:if test="${control == 0}">-</c:if>
+                                    </td>
+                                    <td>#{order.end.toLocaleString()}</td>                                          
+                                </tr> 
+                            </c:if>
+                        </c:forEach>                 
+                    </table>
+                </h:form> 
+            </div>            
+        </div>
+        
+    </ui:define> 
+    
+    <!-- Loading SVG Layers -->
+    <ui:define name="mapLayer"><ui:include src="mapLayers/mapSVGFrontlineLayer.xhtml"/></ui:define>
+    <ui:define name="mapLayer2"><ui:include src="mapLayers/mapSVGHeatLayer.xhtml"/></ui:define>
+    <ui:define name="mapLayer3"><ui:include src="mapLayers/mapSVGSectorsLayer.xhtml"/></ui:define>
+    
+    <ui:define name="body">
+        <script type="text/javascript">
+            
+            var extent = [0, 0, 2747, 2363];
+            var projection = new ol.proj.Projection({
+              code: 'EPSG:3857',
+              units: 'pixels',
+              metersPerUnit: 1273,
+              extent: extent
+            });
+                
+            var full = new ol.control.FullScreen();
+            var zoom = new ol.control.Zoom();
+            var rotate = new ol.control.Rotate({autoHide: false});
+            var mouse = new ol.control.MousePosition({
+                undefinedHTML: 'outside',
+                projection: 'EPSG:3857',
+                coordinateFormat: function(coordinate) {
+                    return ol.coordinate.format(coordinate, '{x}, {y}', 4);
+                }
+            });
+            var scale = new ol.control.ScaleLine();
+            
+            var exten = new ol.control.ZoomToExtent();
+            var minimap = new ol.control.OverviewMap();
+
+            var drotate = new ol.interaction.DragRotate({condition: ol.events.condition.altKeyOnly});
+            var pan = new ol.interaction.DragPan();
+            var dzoom = new ol.interaction.DoubleClickZoom();
+            var mzoom = new ol.interaction.MouseWheelZoom();
+            var attribution = new ol.control.Attribution();
+            /*
+             * 
+             */
+            var styleHomebase = new ol.style.Style({
+                image: new ol.style.Icon(({
+                    scale: 1/4,
+                    rotation: 0,
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    opacity: 1,
+                    src: '../clodwar/templates/background/images/icons/airfield.png'
+                }))
+            });
+            var styleHomebase2 = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0,255,0,1)'
+                    })
+                })
+            });
+            var styleFactory = new ol.style.Style({
+                image: new ol.style.Icon(({
+                    scale: 0.9,
+                    rotation: 0,
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    opacity: 1,
+                    src: '../clodwar/templates/background/images/icons/factory.png'
+                }))
+            });
+            var styleFactory2 = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255,0,0,1)'
+                    })
+                })
+            });
+            var styleWarehouse = new ol.style.Style({
+                image: new ol.style.Icon(({
+                    scale: 1/4,
+                    rotation: 0,
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    opacity: 1,
+                    src: '../clodwar/templates/background/images/icons/warehouse.png'
+                }))
+            });
+            var styleWarehouse2 = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255,0,255,1)'
+                    })
+                })
+            });
+            var styleMission = new ol.style.Style({
+                image: new ol.style.Icon(({
+                    scale: 1/4,
+                    rotation: 0,
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    opacity: 1,
+                    src: '../clodwar/templates/background/images/icons/sortie.png'
+                }))
+            });
+            var styleMission2 = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0,255,255,1)'
+                    })
+                })
+            });
+            var styleRecon = new ol.style.Style({
+                image: new ol.style.Icon(({
+                    scale: 1/4,
+                    rotation: 0,
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    opacity: 1,
+                    src: '../clodwar/templates/background/images/icons/camera.png'
+                }))
+            });
+            var styleRecon2 = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255,255,128,1)'
+                    })
+                })
+            });
+            var styleRedSquare = new ol.style.Style({
+                    fill: new ol.style.Fill({color: 'rgba(255,0,0,0.5)'}),
+                    stroke: new ol.style.Stroke({color: 'rgba(0,0,0,0.5)', width: 2})
+            });
+            var styleBlueSquare = new ol.style.Style({
+                    fill: new ol.style.Fill({color: 'rgba(0,0,255,0.5)'}),
+                    stroke: new ol.style.Stroke({color: 'rgba(0,0,0,0.5)', width: 2})
+            }); 
+            var styleEmptySquare = new ol.style.Style({
+                    fill: new ol.style.Fill({color: 'rgba(0,0,0,0)'}),
+                    stroke: new ol.style.Stroke({color: 'rgba(0,0,0,0.5)', width: 2})
+            }); 
+                      
+            var featuresHomebases = [];
+            var featuresResources = [];
+            var featuresSortie = [];
+            var featuresRecon = [];
+        </script>
+            <c:forEach items="${ClodwarProfileBean.listOfAllHomebases}" var="homebase">
+                <c:if test="${AuthenticationBean.identity.side == homebase.side}" >
+                    <script>
+                    var geomBase= new ol.geom.Point([${homebase.xCoordinate}, ${2363 - homebase.yCoordinate}]);
+                    var featureBase = new ol.Feature(geomBase);
+                    featureBase.setStyle([styleHomebase, styleHomebase2]);
+                    featureBase.set('name', '${homebase.name} airfield');
+                    featuresHomebases.push(featureBase);
+                    </script>
+                </c:if>
+            </c:forEach>
+            <c:forEach items="${ClodwarProfileBean.listOfAllFactories}" var="factory">
+                <c:if test="${AuthenticationBean.identity.side == factory.side}" >
+                    <script>
+                        var geomFactory= new ol.geom.Point([${factory.xCoordinate}, ${2363 - factory.yCoordinate}]);
+                        var featureFactory = new ol.Feature(geomFactory);
+                        featureFactory.setStyle([styleFactory, styleFactory2]);
+                        featureFactory.set('name', '${factory.name} factory');
+                        featuresResources.push(featureFactory);
+                    </script>
+                </c:if>
+            </c:forEach>
+            <c:forEach items="${ClodwarProfileBean.listOfAllWarehouses}" var="warehouse">
+                <c:if test="${AuthenticationBean.identity.side == warehouse.side}" >
+                    <script>
+                    var geomWarehouse= new ol.geom.Point([${warehouse.xCoordinate}, ${2363 - warehouse.yCoordinate}]);
+                    var featureWarehouse = new ol.Feature(geomWarehouse);
+                    featureWarehouse.setStyle([styleWarehouse, styleWarehouse2]);
+                    featureWarehouse.set('name', '${warehouse.name} warehouse');
+                    featuresResources.push(featureWarehouse);
+                    </script>
+                </c:if>
+            </c:forEach>
+                <c:forEach items="${ClodwarStatisticsBean.activeSorties}" var="sortie">
+                    <script>
+                        var sector;
+                        var sectorPart;
+                        var type;
+                    </script>
+                <c:if test="${AuthenticationBean.identity.side == 'BLUE'}" >
+                    <script>
+                    sector = '${sortie.sectorBlue.split(" ")[0]}';
+                    sectorPart = '${sortie.sectorBlue.split("#")[1]}';
+                    type = '${sortie.typeBlue}';
+                    </script>
+                </c:if>
+                <c:if test="${AuthenticationBean.identity.side == 'RED'}" >
+                    <script>
+                    sector = '${sortie.sectorRed.split(" ")[0]}';
+                    sectorPart = '${sortie.sectorRed.split("#")[1]}';
+                    type = '${sortie.typeRed}';
+                    </script>
+                </c:if>
+                    <script>
+                        var x;
+                        var y;
+                        if(sector.charCodeAt(1) &gt; 64) {
+                            x = (sector.charCodeAt(1) - 64) + 25;
+                            y = sector.substr(2, sector.length);
+                        } else {
+                            x = sector.charCodeAt(0) - 65;
+                            y = sector.substr(1, sector.length);
+                        }
+                        x = (x * 78.49) + 39.24;
+                        y = 2363 - (((y - 1) * 78.77) + 39.385);
+                        var geomSortie= new ol.geom.Point([x, y]);
+                        var featureSortie = new ol.Feature(geomSortie);
+                        featureSortie.setStyle([styleMission, styleMission2]);
+                        featureSortie.set('name', 'Sortie: ' + '&lt;a href="#{request.contextPath}/clodwar/statistics/sortie.jsf?id=${sortie.id}"&gt;${sortie.id}&lt;/a&gt;, Type: ' + type);
+                        featuresSortie.push(featureSortie);
+                    </script>
+            </c:forEach>
+
+            <c:forEach items="${ClodwarPilotBean.listOfAllReconFlights}" var="recon">
+                <c:if test="${AuthenticationBean.identity.side == recon.side}" >
+                    <script>
+                        var sector = '#{recon.sector.split(" ")[0]}';
+                        var sectorPart = '#{recon.sector.split("#")[1]}';
+                        var x;
+                        var y;
+                        if(sector.charCodeAt(1) &gt; 64) {
+                            x = (sector.charCodeAt(1) - 64) + 25;
+                            y = sector.substr(2, sector.length);
+                        } else {
+                            x = sector.charCodeAt(0) - 65;
+                            y = sector.substr(1, sector.length);
+                        }
+                        x = (x * 78.49) + 39.24;
+                        y = 2363 - (((y - 1) * 78.77) + 39.385);
+                        var geomRecon= new ol.geom.Point([x, y]);
+                        var featureRecon = new ol.Feature(geomRecon);
+                        featureRecon.setStyle([styleRecon, styleRecon2]);
+                        featureRecon.set('name', 'Recon flight: &lt;a href="#{request.contextPath}/clodwar/pilot/recon-detail.jsf?id=${recon.sortieId}"&gt;${recon.sortieId}&lt;/a&gt;, ${recon.numOfPhotos} photos');
+                        featuresRecon.push(featureRecon);
+                    </script>
+                </c:if>
+            </c:forEach>
+            
+            <script>
+            var vectorSourceResources = new ol.source.Vector({
+                features: featuresResources
+            });
+
+            var vectorLayerResources = new ol.layer.Vector({
+                source: vectorSourceResources
+            });
+            
+            var vectorSourceHomebases = new ol.source.Vector({
+                features: featuresHomebases
+            });
+
+            var vectorLayerHomebases = new ol.layer.Vector({
+                source: vectorSourceHomebases
+            });
+            
+            var vectorSourceSortie = new ol.source.Vector({
+                features: featuresSortie
+            });
+
+            var vectorLayerSortie = new ol.layer.Vector({
+                source: vectorSourceSortie
+            });
+            
+            var vectorSourceRecon = new ol.source.Vector({
+                features: featuresRecon
+            });
+
+            var vectorLayerRecon = new ol.layer.Vector({
+                source: vectorSourceRecon
+            });
+           
+    
+            var styleSelectPoint = [new ol.style.Style({               
+                image: new ol.style.Circle({
+                    radius: 10,
+                    stroke: new ol.style.Stroke({color: 'black', width: 2}),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255,255,0,0.5)'
+                    })
+                })                
+            }), new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 2,
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0,0,0,1)'
+                    })
+                })
+            })
+            ];
+            
+            
+            var stylePointTmp;
+            var selectedTmp;
+            var selectPoint = new ol.interaction.Select({layers: [vectorLayerHomebases, vectorLayerResources, vectorLayerRecon, vectorLayerSortie], hitTolerance: 10}); 
+            selectPoint.on('select', function (e) {
+                if(e.deselected.length &gt; 0) {
+                    e.deselected[0].setStyle(stylePointTmp);
+                }
+                if(e.selected.length &gt; 0) {
+                    stylePointTmp = e.selected[0].getStyle();
+                    selectedTmp = e.selected[0];
+                    styleSelectPoint[2] = stylePointTmp[0];
+                    e.selected[0].setStyle(styleSelectPoint); 
+                    if(e.selected[0].get('name').split(' ')[1] == 'airfield'){
+                        content.innerHTML += '&lt;a href="../clodwar/profile/airfield.jsf?name=' + e.selected[0].get('name').split(' ')[0] + '"&gt;' + e.selected[0].get('name') + '&lt;/a&gt;';
+                    }else if(e.selected[0].get('name').split(' ')[1] == 'factory'){
+                        content.innerHTML += '&lt;a href="../clodwar/profile/factory.jsf?name=' + e.selected[0].get('name').split(' ')[0] + '"&gt;' + e.selected[0].get('name') + '&lt;/a&gt;';
+                    } else if(e.selected[0].get('name').split(' ')[1] == 'warehouse'){
+                        content.innerHTML += '&lt;a href="../clodwar/profile/warehouse.jsf?name=' + e.selected[0].get('name').split(' ')[0] + '"&gt;' + e.selected[0].get('name') + '&lt;/a&gt;';
+                    }else {
+                        content.innerHTML += '&lt;p style="color: blue"&gt;' + e.selected[0].get('name') + '&lt;/p&gt;';
+                    }                    
+                }
+            });
+  
+            /*var sectorSVGLayer = new ol.layer.Image({
+                source: new ol.source.ImageStatic({
+                url: '../clodwar/pilot/mapLayers/current_state-sectors-svg-image.jsf',
+                projection: projection,
+                imageExtent: extent
+              })
+            }); */                    
+                       
+            /**
+            * Elements that make up the popup.
+            */
+           var container = document.getElementById('popup');
+           var content = document.getElementById('popup-content');
+           var closer = document.getElementById('popup-closer');
+
+
+           /**
+            * Create an overlay to anchor the popup to the map.
+            */
+           var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+             element: container,
+             autoPan: true,
+             autoPanAnimation: {
+               duration: 250
+             }
+           }));
+
+
+           /**
+            * Add a click handler to hide the popup.
+            * @return {boolean} Don't follow the href.
+            */
+           closer.onclick = function() {
+             overlay.setPosition(undefined);
+             closer.blur();
+             selectedTmp.setStyle(stylePointTmp);
+             return false;
+           };
+
+
+            var map = new ol.Map({
+              layers: [
+                new ol.layer.Image({
+                    source: new ol.source.ImageStatic({
+                    attributions: [],
+                    url: "../clodwar/templates/background/mapCOD.jpg",
+                    projection: projection,
+                    imageExtent: extent
+                  })
+                }), sectorSVGLayer, vectorLayerResources, vectorLayerHomebases,                
+              ],
+              renderer: 'canvas',
+              target: 'map',
+              overlays: [overlay],       
+              controls: [full, zoom, rotate, mouse, exten, minimap, attribution],
+              interactions: [drotate, pan, dzoom, mzoom, selectPoint],
+              view: new ol.View({
+                projection: projection,
+                center: ol.extent.getCenter(extent),
+                zoom: 2,
+                minZoom: 1,
+                maxZoom: 7
+              })
+            }); 
+                 
+            map.on('singleclick', function(evt) {
+                var coordinate = evt.coordinate;
+                var stringifyFunc = ol.coordinate.createStringXY(2);
+                var x = stringifyFunc(coordinate).split(', ')[0];
+                var y = stringifyFunc(coordinate).split(', ')[1];
+                x = (Math.floor(x / 78.49));
+                y = (30 - Math.floor(y / 78.77));
+                var sector = '';
+                if(x > 25){
+                    sector = 'A';
+                    sector += String.fromCharCode(65 + (x - 26));
+                } else {
+                    sector += String.fromCharCode(65 + x);
+                }
+                sector += 31 - y;     
+                content.innerHTML = 'You clicked on sector: &lt;a href="../clodwar/profile/sector.jsf?name=' + sector + '"&gt;' + sector + '&lt;/a&gt; &lt;p&gt;Exact coordinates: &lt;code&gt;' + stringifyFunc(coordinate) + '&lt;/code&gt;&lt;/p&gt;';
+                overlay.setPosition(coordinate);
+            });
+            
+            
+            
+            function centerZoom() {
+                var pan = ol.animation.pan({
+                source: map.getView().getCenter()
+                });
+                map.beforeRender(pan);
+
+                map.getView().setCenter(ol.extent.getCenter(extent));
+            }
+
+            function resources(checkboxElem){
+                if (checkboxElem.checked) {
+                    map.addLayer(vectorLayerResources);
+                } else {
+                    map.removeLayer(vectorLayerResources);
+                }
+            }
+            
+            function airfields(checkboxElem){
+                if (checkboxElem.checked) {
+                    map.addLayer(vectorLayerHomebases);
+                } else {
+                    map.removeLayer(vectorLayerHomebases);
+                }
+            }
+            
+            function sectorsSVG(checkboxElem){
+                if (checkboxElem.checked) {
+                    if(document.getElementById('checkHeat').checked){
+                        document.getElementById('checkHeat').checked = false;
+                        this.sectorsSVGHeat(document.getElementById('checkHeat'));
+                    }
+                    if(map.getLayers().getLength() &gt; 1){     
+                        var tmpLayer = map.getLayers().item(1);
+                        map.getLayers().setAt(1, sectorSVGLayer);
+                        map.addLayer(tmpLayer);
+                    } else {
+                        map.addLayer(sectorSVGLayer);
+                    }
+                } else {
+                    map.removeLayer(sectorSVGLayer);
+                }
+            }
+            
+            function sectorsSVGHeat(checkboxElem){
+                if (checkboxElem.checked) {
+                    if(document.getElementById('checkSectors').checked){
+                        document.getElementById('checkSectors').checked = false;
+                        this.sectorsSVG(document.getElementById('checkSectors'));
+                    }
+                    if(map.getLayers().getLength() &gt; 1){
+                        var tmpLayer = map.getLayers().item(1);
+                        map.getLayers().setAt(1, sectorSVGLayerHeat);
+                        map.addLayer(tmpLayer);
+                    } else {
+                        map.addLayer(sectorSVGLayerHeat);
+                    }
+                } else {
+                    map.removeLayer(sectorSVGLayerHeat);
+                }
+            }
+            
+            function recon(checkboxElem){
+                if (checkboxElem.checked) {
+                    map.addLayer(vectorLayerRecon);
+                } else {
+                    map.removeLayer(vectorLayerRecon);
+                }
+            }
+            
+            function missions(checkboxElem){
+                if (checkboxElem.checked) {
+                    map.addLayer(vectorLayerSortie);
+                } else {
+                    map.removeLayer(vectorLayerSortie);
+                }
+            }            
+                        
+            function frontline(checkboxElem){
+                if (checkboxElem.checked) {
+                    map.addLayer(frontlineSVGLayer);
+                } else {
+                    map.removeLayer(frontlineSVGLayer);
+                }
+            }
+
+        </script>         
+    </ui:define>
+    
+</ui:composition>
+</html>
+

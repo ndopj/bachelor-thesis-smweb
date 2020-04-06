@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1256px" height="1080px" viewBox="0 0 2747 2363" version="1.1" class="svg-content" 
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <c:forEach items="#{ClodwarProfileBean.listOfAllSectors}" var="sector"> 
+        <c:if test="#{sector.side == 'RED'}"> 
+            <c:if test="#{sector.heatSide == 0 || sector.heatSide == 2}"> 
+                <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,0,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> 
+            </c:if> 
+            <c:if test="#{sector.heatSide == 1}"> 
+                <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(0,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> 
+            </c:if> 
+            <c:if test="#{sector.heatSide == 3}"> 
+                <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> 
+            </c:if> 
+        </c:if> 
+        <c:if test="#{sector.side == 'BLUE'}"> 
+            <c:if test="#{sector.heatSide == 0 || sector.heatSide == 1}"> 
+                <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(0,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> 
+            </c:if> 
+            <c:if test="#{sector.heatSide == 2}"> 
+                <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,0,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> 
+            </c:if> 
+            <c:if test="#{sector.heatSide == 3}"> 
+                <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> 
+            </c:if> 
+        </c:if> 
+        <c:if test="#{sector.side == 'NONE'}"> 
+            <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(0,0,0,0); stroke: rgba(0,0,0,1); stroke-width: 1"/> 
+        </c:if> 
+    </c:forEach> 
+</svg>

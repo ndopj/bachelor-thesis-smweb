@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/templates/admin-template.xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">
+        Nastavenie systemu
+    </ui:define>
+
+    <ui:define name="content">
+        <h1>Nastavenie systemu</h1>
+
+
+        <h3>Úprava / pridanie nastavenia: </h3>
+        <h:form>
+            <table>
+                <tr>
+                    <td>key: </td>
+                    <td><h:inputText id="key" required="true"
+                                     requiredMessage="Identifikátor vlastnosti musí byť zadaný"
+                                     value="#{SystemConfigurationBean.key}" size="50" />
+                        <br/>
+                        <h:message for="key" styleClass="error"/></td>
+                    <td>Identifikator nastavenia</td>
+                </tr>
+                <tr>
+                    <td>stringValue: </td>
+                    <td><h:inputText id="stringValue" required="false"
+                                     value="#{SystemConfigurationBean.stringValue}"  size="50" />
+                        <br/>
+                        <h:message for="stringValue" styleClass="error"/></td>
+                    <td>Textova hodnota</td>
+                </tr>
+                <tr>
+                    <td>intValue: </td>
+                    <td><h:inputText id="intValue" required="false"
+                                     value="#{SystemConfigurationBean.intValue}" size="50"  />
+                        <br/>
+                        <h:message for="intValue" styleClass="error"/></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>doubleValue: </td>
+                    <td><h:inputText id="doubleValue" required="false"
+                                     value="#{SystemConfigurationBean.doubleValue}" size="50"  />
+                        <h:message for="doubleValue" styleClass="error"/></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>calendarValue: </td>
+                    <td><h:inputText value="#{SystemConfigurationBean.calendarValue}" size="50" >
+                        <f:converter converterId="CalendarConverter"/>
+                    </h:inputText>
+                    </td>
+                    <td>UTC</td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td colspan="2"><h:messages styleClass="error"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><h:commandButton value="Ulozit" action="#{SystemConfigurationBean.saveForm}"/></td>
+                    <td></td>
+                </tr>
+            </table>
+        </h:form>
+
+
+        <h3>Aktuálne nastavenia: </h3>
+
+        <div style="font-size: 9pt">
+            <h:form>
+                <p:dataTable value="#{SystemConfigurationBean.items}" var="item" border="0" cellpadding="2"
+                             cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all"
+                             style="border:solid 1px" scrollable="true" scrollHeight="157">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Key"/>
+                        </f:facet>
+                        <strong>
+                            <h:outputText escape="true" value="#{item.key}"/>
+                        </strong>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="String"/>
+                        </f:facet>
+                        <h:outputText escape="false" value="#{item.stringRawValue}"/>
+                    </p:column>
+                    <p:column width="70">
+                        <f:facet name="header">
+                            <h:outputText value="Int"/>
+                        </f:facet>
+                        <h:outputText value="#{item.integerRawValue}"/>
+                    </p:column>
+                    <p:column width="90">
+                        <f:facet name="header">
+                            <h:outputText value="Double"/>
+                        </f:facet>
+                        <h:outputText value="#{item.doubleRawValue}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Calendar"/>
+                        </f:facet>
+                        <h:outputText value="#{item.calendarRawValue}">
+                            <f:converter converterId="CalendarConverter"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column width="90">
+                        <f:facet name="header">
+                            <h:outputText value="&nbsp;"/>
+                        </f:facet>
+                        <div style="padding: 1pt 5pt;float: left;">
+                            <h:commandLink action="#{SystemConfigurationBean.prepareEdit}" value="Edit">
+                                <f:param name="key" value="#{item.key}" />
+                            </h:commandLink>
+                        </div>
+                        <div style="padding: 1pt 3pt;float: left;">
+                            <h:commandLink action="#{SystemConfigurationBean.delete}" value="Delete">
+                                <f:param name="key" value="#{item.key}" />
+                            </h:commandLink>
+                        </div>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1256px" height="1080px" id="svgLayer" viewBox="0 0 2747 2363"  class="svg-content" 
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <c:forEach items="#{ClodwarProfileBean.frontlineSectors}" var="sector"> 
+        <c:if test="#{sector.side == 'RED'}"> 
+            <c:if test="#{sector.leftFrontline}"> 
+                <line x1="#{sector.getxCoordiante() + 0.1}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 0.1}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(255,0,0);stroke-width:5" /> 
+            </c:if> 
+            <c:if test="#{sector.rightFrontline}"> 
+                <line x1="#{sector.getxCoordiante() + 2.757}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 2.757}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(255,0,0);stroke-width:5" /> 
+            </c:if> 
+            <c:if test="#{sector.upFrontline}"> 
+                <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 0.1}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 0.1}%" style="stroke:rgb(255,0,0);stroke-width:5" /> 
+            </c:if> 
+            <c:if test="#{sector.downFrontline}"> 
+                <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 3.23}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 3.23}%" style="stroke:rgb(255,0,0);stroke-width:5" /> 
+            </c:if> 
+        </c:if> 
+        <c:if test="#{sector.side == 'BLUE'}"> 
+            <c:if test="#{sector.leftFrontline}"> 
+                <line x1="#{sector.getxCoordiante() + 0.1}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 0.1}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(0,0,255);stroke-width:5" /> 
+            </c:if> 
+            <c:if test="#{sector.rightFrontline}"> 
+                <line x1="#{sector.getxCoordiante() + 2.757}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 2.757}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(0,0,255);stroke-width:5" /> 
+            </c:if> 
+            <c:if test="#{sector.upFrontline}"> 
+                <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 0.1}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 0.1}%" style="stroke:rgb(0,0,255);stroke-width:5" /> 
+            </c:if> 
+            <c:if test="#{sector.downFrontline}"> 
+                <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 3.23}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 3.23}%" style="stroke:rgb(0,0,255);stroke-width:5" /> 
+            </c:if> 
+        </c:if> 
+    </c:forEach> 
+</svg>

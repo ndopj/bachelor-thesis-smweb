@@ -1,0 +1,239 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Squad Statistics
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="/SMWeb/clodwar/templates/background/css/squad.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">
+        <style>
+            .table.secondleft td:nth-child(2), table.firstleft td:first-child {
+                text-align: left;
+            }​           
+            h3 {
+                color: black;
+            }
+        </style>
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.7); margin-top: 50px; margin-bottom: 50px; min-height: 80vh">
+            <c:set value="#{ClodwarStatisticsBean.getSquadronByName(param['name'])}" var="squad"></c:set>
+            <div class="col-lg-8 col-lg-offset-2" style="margin-bottom: 50px">   
+                <c:if test="#{ClodwarStatisticsBean.getSquadronByName(param['name']) == null}" >
+                    <h1 class="text-center" style="color: red">Squadron with name: #{param['name']} does not exist !</h1>
+                    <script>
+                        window.stop();
+                    </script> 
+                </c:if>
+                <h1 class="text-center">Squadron: <b>#{squad.name}</b></h1>
+            </div>  
+            <div class="col-lg-2">   
+                <ul class="list-inline">  
+                    <c:if test="${squad.side == 'BLUE'}" >
+                        <li><img src="/SMWeb/clodwar/templates/background/images/Allies.png" style="max-height: 36px; max-width: 36px; margin-top: -5px"/></li>
+                        <li><h3 style="color: blue; margin-top: 25px">Allies</h3></li>
+                    </c:if> 
+                    <c:if test="${squad.side == 'RED'}" >
+                        <li><img src="/SMWeb/clodwar/templates/background/images/Axis.png" style="max-height: 36px; max-width: 36px; margin-top: -5px"/></li>
+                        <li><h3 style="color: red; margin-top: 25px">Axis</h3></li>
+                    </c:if> 
+                </ul>                
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h:form>
+                        <table class="table table-striped stripe firstleft table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                                <th>Squadron statistics</th>
+                                <th style="text-align: right">#</th>
+                            </tr>
+                            <tr>
+                                <td>Registered players: </td>
+                                <td>#{squad.numOfPlayers}</td>
+                            </tr>
+                            <tr>
+                                <td>Number of active virtual pilots: </td>
+                                <td>#{squad.activeVirtualPilots}</td>
+                            </tr>
+                            <tr>
+                                <td>Number of used planes: </td>
+                                <td>#{squad.numOfUsedPlanes}</td>
+                            </tr>
+                            <tr>
+                                <td>No. of Sorties in last 14 days: </td>
+                                <td>#{squad.sortiesLast}</td>
+                            </tr>
+                            <tr>
+                                <td>Total no. of Sorties played: </td>
+                                <td>#{squad.sortiesAll}</td>
+                            </tr>
+                            <tr>
+                                <td>Flight time(hours): </td>
+                                <td>#{squad.flightTime}</td>
+                            </tr>
+                            <tr>
+                                <td>Enemy planes shot down: </td>
+                                <td>#{squad.planeKills}</td>
+                            </tr>
+                            <tr>
+                                <td>Enemy parachutes shot down: </td>
+                                <td>#{squad.enemyChutesShot}</td>
+                            </tr>
+                            <tr>
+                                <td>Destroyed ground targets: </td>
+                                <td>#{squad.groundKills}</td>
+                            </tr>
+                            <tr>
+                                <td>Killed virtual pilots of this squadron: </td>
+                                <td>#{squad.lostVirtualPilots}</td>
+                            </tr>
+                            <tr>
+                                <td>Currently captured virtual pilots of this squadron: </td>
+                                <td>#{squad.capturedVirtualPilots}</td>
+                            </tr>
+                            <tr>
+                                <td>Currently blocked virtual pilots of this squadron: </td>
+                                <td>#{squad.blockedVirtualPilots}</td>
+                            </tr>
+                        </table>
+                    </h:form> 
+                </div>
+                <c:set value="${ClodwarStatisticsBean.getVPilotsStatsSumForSquadron(squad.name)}" var="vpilotSum"></c:set> <!-- switch squad.name for 'Escuadron RedEye' for presentation -->
+                <c:set value="#{squad.allVirtualPilotsCount}" var="vpilotCount"></c:set>
+                <div class="col-md-6">
+                    <h:form>
+                        <table class="table table-striped firstleft stripe table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                                <th>The average value of statistical data per the virtual pilot</th>
+                                <th style="text-align: right">#</th>
+                            </tr>
+                            <tr>
+                                <td>Combat flights: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.numOfSorties / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Enemy planes shot down: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.planeKills / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Parachutes shot down: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.chuteKills / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Destroyed ground targets: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.groundkills / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Planes used: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.planesUsed / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Plane repairs: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.planeRepairs / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Rounds shot: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.roundsShot / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Captured virtual pilots: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.capturedCount / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Rescued virtual pilots: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.rescuedCount / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Duration of blocking pilots (in minutes): </td>
+                                <td>#{ClodwarBean.round(vpilotSum.blockedSum / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Ejected from the plane: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.ejectedCount / vpilotCount)}</td>
+                            </tr>
+                            <tr>
+                                <td>Fly-time: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.flightTimeSum / vpilotCount)}</td>
+                            </tr>
+                        </table>
+                    </h:form> 
+                </div>
+                <div class="col-md-6">
+                    <h:form>
+                        <h3 class="text-center">Players enlisted in this squadron</h3>
+                        <table class="table table-striped stripe clicktable table-bordered secondleft" id="players" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                                <th style="text-align: right">#</th>
+                                <th>Player Name</th> 
+                                <th style="text-align: right">Air Kills</th> 
+                                <th style="text-align: right">Ground Kills</th>
+                                <th style="text-align: right">Deaths</th> 
+                                <th style="text-align: right">K/D Ratio</th>
+                            </tr>
+                            <c:forEach items="${squad.players}" var="player"> <!-- switch squad.players for listOfAllPlayers for presentation -->
+                                <tr class='clickable-row' data-href='/SMWeb/clodwar/statistics/pilot-stats.jsf?login=#{player.login}'>
+                                    <td>#{player.id}</td>
+                                    <td>#{player.login}</td>                                
+                                    <td>#{player.kills}</td>
+                                    <td>#{player.groundKills}</td>
+                                    <td>#{player.deaths}</td>
+                                    <td>#{ClodwarBean.round((player.kills)/(player.deaths))}</td>                               
+                                </tr>                            
+                            </c:forEach>                                                             
+                        </table>
+                    </h:form> 
+                </div>
+                <div class="col-md-6">
+                    <h:form>
+                        <h3 class="text-center">Aircrafts shot down by this squadron</h3>
+                        <table class="table table-striped firstleft stripe table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                                <th>Type of aircraft</th>
+                                <th style="text-align: right">Count</th>                                 
+                            </tr>
+                            <c:forEach items="#{squad.planesShotDown.keySet()}" var="plane">
+                                <tr>                              
+                                    <td>#{plane}</td>
+                                    <td>#{squad.planesShotDown.get(plane)}</td>                               
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </h:form> 
+                </div>
+                <div class="col-md-6">
+                    <h:form>
+                        <h3 class="text-center">Aircrafts used by this squadron</h3>
+                        <table class="firstleft table table-striped stripe table-bordered" style="background-color: rgba(255,255,255,0.6); float: right; text-align: right">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                                <th>Type of used aircraft</th>
+                                <th style="text-align: right">Count</th>  
+                                <th style="text-align: right">No. of sorties</th>
+                                <th style="text-align: right">Destroyed</th>
+                            </tr>
+                            <c:forEach items="#{squad.planesUsed.keySet()}" var="plane">
+                                <tr>                              
+                                    <td>#{plane}</td>
+                                    <td>#{squad.planesUsed.get(plane)}</td>
+                                    <td>#{squad.planesNumOfSorties.get(plane)}</td>     
+                                    <td>#{squad.planesLost.get(plane)}</td>
+                                </tr>
+                            </c:forEach>                
+                        </table>
+                    </h:form> 
+                </div>
+            </div>
+        </div>              
+    </ui:define>   
+    
+</ui:composition>

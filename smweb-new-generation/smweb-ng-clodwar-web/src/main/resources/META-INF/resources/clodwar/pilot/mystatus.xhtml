@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        My status
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="#{request.contextPath}/clodwar/templates/background/css/my_status.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">
+        <style>            
+            .table.pilot td:last-child{
+                text-align: center;
+            }​
+        </style>
+        <style>  
+            h4 {
+                color: black;
+            }
+            h3 {
+                color: black;
+            }
+        </style>
+        <style>                        
+            .table.pilot td:first-child, table.airfield td:nth-child(7){
+                text-align: right;
+            }​ 
+        </style>
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.6); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+            <div class="col-lg-8 col-lg-offset-2">
+                <h1 class="text-center">My status</h1>
+            </div> 
+            <div class="col-lg-2">   
+                <ul class="list-inline">    
+                    <c:if test="${AuthenticationBean.identity.side == 'BLUE'}">
+                        <li><img src="#{request.contextPath}/clodwar/templates/background/images/Allies.png" style="max-height: 36px; max-width: 36px; margin-top: -5px"/></li>
+                        <li><h3 style="color: blue; margin-top: 25px">Allies</h3></li>
+                    </c:if> 
+                    <c:if test="${AuthenticationBean.identity.side == 'RED'}">
+                        <li><img src="#{request.contextPath}/clodwar/templates/background/images/Axis.png" style="max-height: 36px; max-width: 36px; margin-top: -5px"/></li>
+                        <li><h3 style="color: red; margin-top: 25px">Axis</h3></li>
+                    </c:if> 
+                </ul> 
+            </div>
+            <c:set value="${ClodwarProfileBean.getPlayersLastUsedVPilot(AuthenticationBean.identity.login)}" var="vpilot"></c:set> <!-- switch AuthenticationBean.identity.login for 'Rambo' for presentation-->
+            <c:set value="${ClodwarProfileBean.getPlayersLastUsedPlane(AuthenticationBean.identity.login)}" var="plane"></c:set> <!-- switch AuthenticationBean.identity.login for 'Rambo' for presentation-->
+            <div class="col-md-5 col-md-offset-1">
+                <h3>My Last pilot</h3>
+                <h4>Name: <a href="#{request.contextPath}/clodwar/profile/vpilot.jsf?name=#{vpilot.urlName}">#{vpilot.name}</a></h4>
+                <h4>Category: #{vpilot.category} pilot</h4>
+                <h4>Homebase: <a href="#{request.contextPath}/clodwar/profile/airfield.jsf?name=#{vpilot.homebase}">#{vpilot.homebase} airfield</a></h4>
+                <h4>State after last sortie: #{vpilot.lastStatus}</h4>
+                <h4>Current state: #{vpilot.status}</h4> 
+                <h4 title="#{ClodwarBean.getBlockedTitile(vpilot.blocked)}">Blocked until: #{vpilot.blocked.toLocaleString()}<c:if test="#{vpilot.blocked == null}">-</c:if></h4>
+            </div>
+            <div class="col-md-6">
+                <h3>My Last plane</h3>
+                <h4>Name: <a href="#{request.contextPath}/clodwar/profile/plane.jsf?name=#{plane.urlName}">#{plane.name}</a></h4>
+                <h4>Type: #{plane.type}</h4>
+                <h4>Homebase: <a href="#{request.contextPath}/clodwar/profile/airfield.jsf?name=#{plane.homebase}">#{plane.homebase} airfield</a></h4>
+                <h4>State after last sortie: #{plane.lastStatus}</h4>
+                <h4>Current state: #{plane.status}</h4>
+                <h4 title="#{ClodwarBean.getBlockedTitile(plane.blocked)}">Blocked until: #{plane.blocked.toLocaleString()}<c:if test="#{plane.blocked == null}">-</c:if></h4>
+            </div>
+            <div class="col-md-10 col-md-offset-1">
+                <h3>My Pilots</h3>
+                <h:form>
+                    <table class="table table-striped clicktable pilot stripe table-bordered" id="vpilots" style="background-color: rgba(255,255,255,0.6)">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style="text-align: right">#</th>
+                            <th>Name</th>
+                            <th>Type</th> 
+                            <th>Homebase</th>
+                            <th>State</th> 
+                            <th style="text-align: center">Blocked until</th>                                 
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="${ClodwarProfileBean.getAliveVpilotsOfPlayer(AuthenticationBean.identity.login)}" var="vpilot"> <!-- switch AuthenticationBean.identity.login for 'Rambo' for presentation-->
+                            <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/profile/vpilot.jsf?name=#{vpilot.urlName}'>
+                                <td>#{enum}</td>
+                                <td>#{vpilot.name}</td>
+                                <td>#{vpilot.category} pilot</td>
+                                <td><a href="#{request.contextPath}/clodwar/profile/airfield.jsf?name=#{vpilot.homebase}">#{vpilot.homebase}</a></td>
+                                <td>#{vpilot.status}</td>   
+                                <td title="#{ClodwarBean.getBlockedTitile(vpilot.blocked)}">#{vpilot.blocked.toLocaleString()}<c:if test="#{vpilot.blocked == null}">-</c:if></td>
+                            </tr>
+                            <c:set value="#{enum + 1}" var="enum"></c:set>
+                        </c:forEach>                           
+                    </table>
+                </h:form> 
+            </div>
+            <div class="col-md-10 col-md-offset-1" style="margin-bottom: 15px">
+                <h3>Planes available to me</h3>
+                <h:form>
+                    <table class="table table-striped clicktable airfield pilot stripe table-bordered" id="vpilots" style="background-color: rgba(255,255,255,0.6)">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style="text-align: right">#</th>
+                            <th>Name</th>
+                            <th>Type</th> 
+                            <th>Category</th>
+                            <th>Homebase</th>
+                            <th>State</th>
+                            <th style="text-align: right">Fuel</th>                            
+                            <th style="text-align: center">Blocked until</th>                                 
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="${ClodwarProfileBean.getHomebaseNames(AuthenticationBean.identity.side)}" var="homebase"> 
+                            <c:set value="${ClodwarProfileBean.getPlanesByHomebaseAndPlayer(homebase, AuthenticationBean.identity.login)}" var="homebasePlanes"></c:set>
+                            <c:if test="#{homebasePlanes.size() != 0}">
+                                <tr class='clickable-row' style="background-color: rgba(102, 153, 255, 0.5)" data-href='/SMWeb/clodwar/profile/airfield.jsf?name=#{homebase}'>
+                                    <td colspan="8" style="text-align: center">#{homebase} Homebase</td>
+                                </tr>
+                            </c:if>                            
+                            <c:forEach items="${ClodwarProfileBean.getPlanesByHomebaseAndPlayer(homebase, AuthenticationBean.identity.login)}" var="plane"> <!-- switch AuthenticationBean.identity.login for 'Rambo' for presentation-->
+                                <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/profile/plane.jsf?name=#{plane.urlName}'>
+                                    <td>#{enum}</td>
+                                    <td>#{plane.name}</td>
+                                    <td>#{plane.type}</td>
+                                    <td>#{plane.category}</td>
+                                    <td><a href="#{request.contextPath}/clodwar/profile/airfield.jsf?name=#{plane.homebase}">#{plane.homebase}</a></td>
+                                    <td>#{plane.status}</td>
+                                    <td>#{ClodwarBean.round(plane.fuel)}%</td>
+                                    <td title="#{ClodwarBean.getBlockedTitile(plane.blocked)}">#{plane.blocked.toLocaleString()}<c:if test="#{plane.blocked == null}">-</c:if></td>
+                                </tr>  
+                                <c:set value="#{enum + 1}" var="enum"></c:set>
+                            </c:forEach>                                        
+                        </c:forEach>                         
+                    </table>
+                </h:form>
+
+                <h3>Create new virtual pilot</h3>
+                <h:form>
+                    <label>Pilots name: </label>
+                    <h:inputText class="form-control" id="virtualPilotsName" value="#{virtualPilotsName}"/>
+
+                    <label>Pilots type: </label>
+                    <br/>
+                    <!-- ORIGINAL !!
+                   	<h:selectOneMenu value="#{virtualPilotsTypeEnum}" converter="virtualPilotsTypeConverter"> -->
+                    <h:selectOneMenu value="#{virtualPilotsTypeEnum}">
+                        <f:selectItems value="#{ClodwarSetupBean.getPilotTypes()}" var="virtualPilotsType" itemValue="#{virtualPilotsType}" itemLabel="#{virtualPilotsType}" />
+                    </h:selectOneMenu>
+                    
+                    <br/>
+                    <h:commandButton value="Create pilot" type="submit" action="#{ClodwarSetupBean.createVirtualPilot(virtualPilotsName, virtualPilotsTypeEnum)}" />
+                </h:form>
+            </div>
+        </div>
+    </ui:define>   
+    
+</ui:composition>
+</html>
+

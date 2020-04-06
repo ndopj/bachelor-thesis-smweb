@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+                    
+    <script>
+        var extent = [0, 0, 2747, 2363];
+        var projection = new ol.proj.Projection({
+            code: 'EPSG:3857',
+            units: 'pixels',
+            metersPerUnit: 1273,
+            extent: extent
+        });
+
+        var sectorSVGLayerHeat = new ol.layer.Image({
+            source: new ol.source.ImageStatic({
+            attributions: [],
+            url: 'data:image/svg+xml;utf8,<svg width="1256px" height="1080px" viewBox="0 0 2747 2363" version="1.1" class="svg-content" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink"> <c:forEach items="#{ClodwarProfileBean.listOfAllSectors}" var="sector"> <c:if test="#{sector.side == 'RED'}"> <c:if test="#{sector.heatSide == 0 || sector.heatSide == 2}"> <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,0,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> </c:if> <c:if test="#{sector.heatSide == 1}"> <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(0,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> </c:if> <c:if test="#{sector.heatSide == 3}"> <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> </c:if> </c:if> <c:if test="#{sector.side == 'BLUE'}"> <c:if test="#{sector.heatSide == 0 || sector.heatSide == 1}"> <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(0,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> </c:if> <c:if test="#{sector.heatSide == 2}"> <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,0,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> </c:if> <c:if test="#{sector.heatSide == 3}"> <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(255,0,255,#{sector.activity}); stroke: rgba(0,0,0,1); stroke-width: 1"/> </c:if> </c:if> <c:if test="#{sector.side == 'NONE'}"> <rect width="2.857%" height="3.33%" x="#{sector.getxCoordiante()}%" y="#{sector.getyCoordiante()}%" style="fill: rgba(0,0,0,0); stroke: rgba(0,0,0,1); stroke-width: 1"/> </c:if> </c:forEach> </svg>',
+            projection: projection,
+            imageExtent: extent
+            })
+        }); 
+        // added in extra file because adding this layer to file current_state.xhtml will make map not to load.
+    </script>  
+</ui:composition>

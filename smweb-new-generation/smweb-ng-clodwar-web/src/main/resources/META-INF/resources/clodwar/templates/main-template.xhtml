@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html class="full" lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html">
+<!-- Make sure the <html> tag is set to the .full CSS class. Change the background image in the full.css file. -->
+
+<h:head>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+
+    <title><ui:insert name="title">ClodWar</ui:insert></title>
+    
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://openlayers.org/en/v5.0.0/css/ol.css" type="text/css"/>
+    <script src="https://openlayers.org/en/v5.0.0/build/ol.js"></script>
+
+
+    <!-- Bootstrap Core CSS -->
+    <link href="#{request.contextPath}/clodwar/templates/background/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    <ui:insert name="image"> <link href="#{request.contextPath}/clodwar/templates/background/css/full3.css" rel="stylesheet"/> </ui:insert>
+    
+    <link href="#{request.contextPath}/clodwar/templates/background/css/simple-sidebar.css" rel="stylesheet"/>
+    <link href="#{request.contextPath}/clodwar/templates/background/css/tables.css" rel="stylesheet"/>
+    
+    <ui:insert name="head"></ui:insert>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+    h1   {color: rgb(0, 0, 0);}
+    p    {color: rgb(0, 0, 0);}
+    </style>
+    
+</h:head>
+
+<h:body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">  <!-- style="border-radius: 0; border-width:0 0 1px; position: fixed; top: 0" -->
+        
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#top_menu">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!--ui:insert name="nav_home">
+                    <a class="navbar-brand" href="/SMWeb/clodwar/">ClodWar</a>
+                </ui:insert-->
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="top_menu">
+                <ui:insert name="top_menu">Navbar</ui:insert>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->                
+    </nav>
+    
+    <ui:insert name="sidebar"></ui:insert>
+    
+    <div class="container" style=" ">
+        <ui:insert name="content">
+            <div class="row" style="background-color: rgba(255,255,255,0.45); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+                <div class="col-lg-12">
+                    <h1 class="text-center">ClodWar</h1>
+                    <p>Úvodná stránka Clodwar.</p>
+                </div>
+            </div>
+        </ui:insert>
+    </div>
+    <ui:insert name="mapLayer"></ui:insert>
+    <ui:insert name="mapLayer2"></ui:insert>
+    <ui:insert name="mapLayer3"></ui:insert>
+    <ui:insert name="body"></ui:insert>
+
+    <!-- jQuery -->
+    <script src="#{request.contextPath}/clodwar/templates/background/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="#{request.contextPath}/clodwar/templates/background/js/bootstrap.min.js"></script>
+    
+    <!-- Menu Toggle Script -->
+    <script>
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+        
+        jQuery(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>    
+
+</h:body>
+
+</html>

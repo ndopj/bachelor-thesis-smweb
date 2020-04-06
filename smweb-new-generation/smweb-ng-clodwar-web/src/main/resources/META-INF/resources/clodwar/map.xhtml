@@ -1,0 +1,462 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Game Map
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="#{request.contextPath}/clodwar/templates/background/css/full.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">
+        <style type="text/css">
+            .map {
+                height: 600px;
+                width: 100%;
+                float: left;
+            }
+            .ol-rotate {
+                top: 40px;
+            }
+            .ol-mouse-position{
+                right: 40px;
+            }
+            .ol-scale-line{
+                left: unset;
+                right: 8px;
+            }
+            label.legend{
+                margin-bottom: 5px;   
+            }
+            input.lege{
+                margin-top: 23px;
+            }
+            div.notes{
+                margin-bottom: 15px;
+                margin-top: 15px;
+            }
+        </style>
+        <style>
+        .ol-popup {
+          position: absolute;
+          background-color: white;
+          -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+          filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+          padding: 15px;
+          border-radius: 10px;
+          border: 1px solid #cccccc;
+          bottom: 12px;
+          left: -50px;
+          min-width: 280px;
+        }
+        .ol-popup:after, .ol-popup:before {
+          top: 100%;
+          border: solid transparent;
+          content: " ";
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+        }
+        .ol-popup:after {
+          border-top-color: white;
+          border-width: 10px;
+          left: 48px;
+          margin-left: -10px;
+        }
+        .ol-popup:before {
+          border-top-color: #cccccc;
+          border-width: 11px;
+          left: 48px;
+          margin-left: -11px;
+        }
+        .ol-popup-closer {
+          text-decoration: none;
+          position: absolute;
+          top: 2px;
+          right: 8px;
+        }
+        .ol-popup-closer:after {
+          content: "✖";
+        }
+    </style>
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="col-lg-12">
+            <h1 class="text-center">Game Map</h1>
+        </div>
+        <div class="row" style="margin-bottom: 30px">
+            <div class="col-xs-11" style="margin-left: -15px; margin-right: -5px">
+                <div id="map" class="map"  style="background-color: rgba(255,255,255,0.7)"></div>
+                <div id="popup" class="ol-popup">
+                    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                    <div id="popup-content"></div>
+                </div>
+                <div class="col-md-12" style=" margin-top: 10px; background-color: rgba(255,255,255,0.7)">                                
+                    <div class="col-md-3 notes">
+                        <img src="#{request.contextPath}/clodwar/templates/background/images/icons/extent.png" alt="..." class="img-thumbnail"> Zoom out and center map</img>
+                    </div>
+                    <div class="col-md-3 notes">
+                        <img src="#{request.contextPath}/clodwar/templates/background/images/icons/fullscreen.png" alt="..." class="img-thumbnail"> Open map in fullscreen</img>
+                    </div>
+                    <div class="col-md-3 notes">
+                        <img src="#{request.contextPath}/clodwar/templates/background/images/icons/rotation.png" alt="..." class="img-thumbnail"> Reset map rotation</img>
+                    </div>
+                    <div class="col-md-3 notes">
+                        <img src="#{request.contextPath}/clodwar/templates/background/images/icons/minimap.png" alt="..." class="img-thumbnail"> Open minimap</img>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-1" style="background-color: rgba(255,255,255,0.7); min-width: 10%; margin-right: 0px">
+                <div class="checkbox">
+                    <h4 class="text-center">Legend</h4>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkAirfirlds" checked="checked" onchange="airfields(this)" class="lege">
+                            <img src="#{request.contextPath}/clodwar/templates/background/images/icons/airfield.png" class="img-thumbnail"/> Airfield</input>
+                    </label>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkMissions" checked="checked" onchange="missions(this)" class="lege">
+                            <img src="#{request.contextPath}/clodwar/templates/background/images/icons/sortie.png" class="img-thumbnail"/> Conflict</input>
+                    </label>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkSectors" onchange="sectorsSVG(this)" class="lege">
+                            <img src="#{request.contextPath}/clodwar/templates/background/images/icons/sectors.png" class="img-thumbnail"/> Sectors</input>
+                    </label>
+                    <label class="legend text-center">
+                        <input type="checkbox" id="checkSectorsHeat" onchange="sectorsSVGHeat(this)" class="lege">
+                            <img src="#{request.contextPath}/clodwar/templates/background/images/icons/sectorsHeat.png" class="img-thumbnail"/> HeatMap</input>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </ui:define> 
+    
+    <ui:define name="mapLayer2"><ui:include src="pilot/mapLayers/mapSVGHeatLayer.xhtml"/></ui:define>
+    <ui:define name="mapLayer3"><ui:include src="pilot/mapLayers/mapSVGSectorsLayer.xhtml"/></ui:define>
+    
+    <ui:define name="body">
+        <script type="text/javascript">
+        // Map views always need a projection.  Here we just want to map image
+        // coordinates directly to map coordinates, so we create a projection that uses
+        // the image extent in pixels.
+
+            var extent = [0, 0, 2747, 2363];
+            var projection = new ol.proj.Projection({
+              code: 'xkcd-image',
+              units: 'pixels',
+              extent: extent
+            });
+
+            var full = new ol.control.FullScreen();
+            var zoom = new ol.control.Zoom();
+            var rotate = new ol.control.Rotate({autoHide: false});
+            var mouse = new ol.control.MousePosition({
+                undefinedHTML: 'outside',
+                projection: 'EPSG:4326',
+                coordinateFormat: function(coordinate) {
+                    return ol.coordinate.format(coordinate, '{x}, {y}', 4);
+                }
+            });
+            var scale = new ol.control.ScaleLine();
+            var exten = new ol.control.ZoomToExtent();
+            var minimap = new ol.control.OverviewMap();
+
+            var drotate = new ol.interaction.DragRotate({condition: ol.events.condition.altKeyOnly});
+            var pan = new ol.interaction.DragPan();
+            var dzoom = new ol.interaction.DoubleClickZoom();
+            var mzoom = new ol.interaction.MouseWheelZoom();
+            /*
+             * 
+             */
+            
+            var styleHomebase = new ol.style.Style({
+                image: new ol.style.Icon(({
+                    scale: 1/4,
+                    rotation: 0,
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    opacity: 1,
+                    src: 'clodwar/templates/background/images/icons/airfield.png'
+                }))
+            });
+            var styleHomebase2 = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0,255,0,1)'
+                    })
+                })
+            });
+            var styleMission = new ol.style.Style({
+                image: new ol.style.Icon(({
+                    scale: 1/4,
+                    rotation: 0,
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    opacity: 1,
+                    src: 'templates/background/images/icons/sortie.png'
+                }))
+            });
+            var styleMission2 = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0,255,255,1)'
+                    })
+                })
+            });
+            
+            var featuresHomebases = [];
+            var featuresSortie = [];
+        </script>
+
+        <c:forEach items="${ClodwarProfileBean.listOfAllHomebases}" var="homebase">
+            <script>
+                var geomBase= new ol.geom.Point([${homebase.xCoordinate}, ${2363 - homebase.yCoordinate}]);
+                var featureBase = new ol.Feature(geomBase);
+                featureBase.setStyle([styleHomebase, styleHomebase2]);
+                featureBase.set('name', '${homebase.name} airfield');
+                featuresHomebases.push(featureBase);
+                </script>
+        </c:forEach>
+        <c:forEach items="${ClodwarStatisticsBean.activeSorties}" var="sortie">
+            <c:if test="${sortie.typeBlue.equals('Strategic Bombing') or sortie.typeRed.equals('Strategic Bombing')}" >
+                <script>
+                    var sector;
+                    var sectorPart;
+                    var type;
+                </script>
+            <c:if test="${sortie.typeBlue.equals('Strategic Bombing')}" >
+                        sector = '${sortie.sectorBlue.split(' ')[0]}';
+                        sectorPart = '${sortie.sectorBlue.split('#')[1]}';
+                        type = '${sortie.typeBlue}';
+            </c:if>
+            <c:if test="${sortie.typeRed.equals('Strategic Bombing')}" >
+                        sector = '${sortie.sectorRed.split(' ')[0]}';
+                        sectorPart = '${sortie.sectorRed.split('#')[1]}';
+                        type = '${sortie.typeRed}';
+            </c:if>
+                <script>
+                    var x;
+                    var y;
+                    if(sector.charCodeAt(1) &gt; 64) {
+                        x = (sector.charCodeAt(1) - 64) + 25;
+                        y = sector.substr(2, sector.length);
+                    } else {
+                        x = sector.charCodeAt(0) - 65;
+                        y = sector.substr(1, sector.length);
+                    }         
+                    x = (x * 78.49) + 39.24;
+                    y = 2363 - (((y - 1) * 78.77) + 39.385);
+                    var geomSortie= new ol.geom.Point([x, y]);
+                    var featureSortie = new ol.Feature(geomSortie);
+                    featureSortie.setStyle([styleMission, styleMission2]);
+                    featureSortie.set('name', 'Conflict Type: ' + type);
+                    featuresSortie.push(featureSortie);
+                 </script>
+            </c:if>
+        </c:forEach>
+            <script>
+            var vectorSourceHomebases = new ol.source.Vector({
+                features: featuresHomebases
+            });
+
+            var vectorLayerHomebases = new ol.layer.Vector({
+                source: vectorSourceHomebases
+            });
+             
+            var vectorSourceSortie = new ol.source.Vector({
+                features: featuresSortie
+            });
+
+            var vectorLayerSortie = new ol.layer.Vector({
+                source: vectorSourceSortie
+            });
+            
+            var styleSelectPoint = [new ol.style.Style({               
+                image: new ol.style.Circle({
+                    radius: 10,
+                    stroke: new ol.style.Stroke({color: 'black', width: 2}),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255,255,0,0.5)'
+                    })
+                })                
+            }), new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 2,
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0,0,0,1)'
+                    })
+                })
+            })
+            ];
+            
+            var stylePointTmp;
+            var selectPoint = new ol.interaction.Select({layers: [vectorLayerHomebases, vectorLayerSortie], hitTolerance: 10});
+            selectPoint.on('select', function (e) {
+                if(e.deselected.length &gt; 0) {
+                    e.deselected[0].setStyle(stylePointTmp);
+                }
+                if(e.selected.length &gt; 0) {
+                    stylePointTmp = e.selected[0].getStyle();
+                    styleSelectPoint[2] = stylePointTmp[0];
+                    e.selected[0].setStyle(styleSelectPoint); 
+                    content.innerHTML += '&lt;p style="color: blue"&gt;' + e.selected[0].get('name') + '&lt;/p&gt;';                 
+                }
+            });
+            
+            /**
+            * Elements that make up the popup.
+            */
+           var container = document.getElementById('popup');
+           var content = document.getElementById('popup-content');
+           var closer = document.getElementById('popup-closer');
+
+
+           /**
+            * Create an overlay to anchor the popup to the map.
+            */
+           var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+             element: container,
+             autoPan: true,
+             autoPanAnimation: {
+               duration: 250
+             }
+           }));
+
+
+           /**
+            * Add a click handler to hide the popup.
+            * @return {boolean} Don't follow the href.
+            */
+           closer.onclick = function() {
+             overlay.setPosition(undefined);
+             closer.blur();
+             return false;
+           };
+           
+            /*
+             * 
+             */
+
+            var map = new ol.Map({
+              layers: [
+                new ol.layer.Image({
+                    source: new ol.source.ImageStatic({
+                    attributions: [],
+                    src: 'templates/background/mapCOD.jpg',
+                    projection: projection,
+                    imageExtent: extent
+                  })
+                }), vectorLayerHomebases, vectorLayerSortie
+              ],
+              renderer: 'canvas',
+              target: 'map',
+              overlays: [overlay], 
+              controls: [full, zoom, rotate, mouse, scale, exten, minimap],
+              interactions: [drotate, pan, dzoom, mzoom, selectPoint],
+              view: new ol.View({
+                projection: projection,
+                center: ol.extent.getCenter(extent),
+                zoom: 2,
+                minZoom: 1,
+                maxZoom: 7
+              })
+            }); 
+            
+            map.on('singleclick', function(evt) {
+                var coordinate = evt.coordinate;
+                var stringifyFunc = ol.coordinate.createStringXY(2);
+                var x = stringifyFunc(coordinate).split(', ')[0];
+                var y = stringifyFunc(coordinate).split(', ')[1];
+                x = (Math.floor(x / 78.49));
+                y = (30 - Math.floor(y / 78.77));
+                var sector = '';
+                if(x &gt; 25){
+                    sector = 'A';
+                    sector += String.fromCharCode(65 + (x - 26));
+                } else {
+                    sector += String.fromCharCode(65 + x);
+                }
+                sector += 31 - y;       
+                content.innerHTML = '&lt;p&gt;You clicked on sector: ' + sector + '&lt;/p&gt; &lt;p&gt;Exact coordinates: &lt;code&gt;' + stringifyFunc(coordinate) + '&lt;/code&gt;&lt;/p&gt;';
+                overlay.setPosition(coordinate);
+            });
+
+            function centerZoom() {
+                var pan = ol.animation.pan({
+                source: map.getView().getCenter()
+                });
+                map.beforeRender(pan);
+
+                map.getView().setCenter(ol.extent.getCenter(extent));
+            }
+
+            function airfields(checkboxElem){
+                if (checkboxElem.checked) {
+                    map.addLayer(vectorLayerHomebases);
+                } else {
+                    map.removeLayer(vectorLayerHomebases);
+                }
+            }
+            
+            function missions(checkboxElem){
+                if (checkboxElem.checked) {
+                    map.addLayer(vectorLayerSortie);
+                } else {
+                    map.removeLayer(vectorLayerSortie);
+                }
+            }  
+            
+            function sectorsSVG(checkboxElem){
+                if (checkboxElem.checked) {
+                    if(document.getElementById('checkSectorsHeat').checked){
+                        document.getElementById('checkSectorsHeat').checked = false;
+                        this.sectorsSVGHeat(document.getElementById('checkSectorsHeat'));
+                    }
+                    if(map.getLayers().getLength() &gt; 1){                        
+                        var tmpLayer = map.getLayers().item(1);
+                        map.getLayers().setAt(1, sectorSVGLayer);
+                        map.addLayer(tmpLayer);
+                    } else {
+                        map.addLayer(sectorSVGLayer);
+                    }
+                } else {
+                    map.removeLayer(sectorSVGLayer);
+                }
+            }
+            
+            function sectorsSVGHeat(checkboxElem){
+                if (checkboxElem.checked) {
+                    if(document.getElementById('checkSectors').checked){
+                        document.getElementById('checkSectors').checked = false;
+                        this.sectorsSVG(document.getElementById('checkSectors'));
+                    }
+                    if(map.getLayers().getLength() &gt; 1){     
+                        var tmpLayer = map.getLayers().item(1);
+                        map.getLayers().setAt(1, sectorSVGLayerHeat);
+                        map.addLayer(tmpLayer);
+                    } else {
+                        map.addLayer(sectorSVGLayerHeat);
+                    }
+                } else {
+                    map.removeLayer(sectorSVGLayerHeat);
+                }
+            }
+            
+        </script>
+    </ui:define>
+    
+</ui:composition>
+</html>
+

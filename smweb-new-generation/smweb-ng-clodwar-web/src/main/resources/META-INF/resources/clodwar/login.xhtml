@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml">
+
+    <ui:define name="title">
+        ClodWar - Log In
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="#{request.contextPath}/clodwar/templates/background/css/full3.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">
+        <style type="text/css">
+            .form-control{ 
+                width: 50%;
+            }
+        </style>  
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.6); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+            <div class="col-lg-12">
+                <h1 class="text-center">ClodWar Log In</h1>
+            </div>
+            
+            <h:form>                
+                <div class="form-group">
+                  <label class="col-md-offset-3" style="margin-top: 25px" for="loginInput">Login</label>
+                  <h:inputText class="form-control center-block" id="loginInput" value="#{AuthenticationBean.loginForForm}"/>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-offset-3" for="passwordInput">Password</label>
+                  <h:inputSecret class="form-control center-block" id="passwordInput" value="#{AuthenticationBean.passwordForForm}"/>
+                </div>
+                <span class="col-md-6 col-md-offset-3">
+                    <h:messages style="outline: 1px solid #FF0000; background-color: rgba(255, 179, 179,0.8); color: red"/>
+                </span>
+                <h:commandButton type="submit" class="btn btn-default col-md-offset-3" value="Submit" action="#{AuthenticationBean.doLoginClod()}"/>
+            </h:form>
+        </div>
+    </ui:define>   
+    
+</ui:composition>
+</html>

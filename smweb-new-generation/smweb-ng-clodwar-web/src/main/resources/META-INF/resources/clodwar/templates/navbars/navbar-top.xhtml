@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+    <ul class="nav navbar-nav" style="min-width: 100%">    
+        <li>
+            <a style="font-size: 18px; margin-left: -15px;" href="#{request.contextPath}/clodwar">ClodWar</a>
+        </li>
+        <c:if test="${AuthenticationBean.getIdentityLogin() != null}" >
+            <li>
+                <a href="#{request.contextPath}/clodwar/pilot/current_state.xhtml">Current State</a>
+            </li>
+            <li>
+                <a href="#{request.contextPath}/clodwar/pilot/mystatus.xhtml">My Status</a>
+            </li>
+            <li>
+                <a href="#{request.contextPath}/clodwar/pilot/orders.xhtml">Orders</a>
+            </li>
+            <li>
+                <a href="#{request.contextPath}/clodwar/pilot/resources.xhtml">Resources</a>
+            </li>
+            <li>
+                <a href="#{request.contextPath}/clodwar/pilot/reconnaissance.xhtml">Recon</a>
+            </li>
+        </c:if>
+        <c:if test="${AuthenticationBean.getIdentityLogin() == null}" >
+            <li>
+                <a href="#{request.contextPath}/clodwar/map.xhtml">Map</a>
+            </li>
+        </c:if>    
+            <li>
+                <a href="#{request.contextPath}/clodwar/pilots.xhtml">Pilots</a>
+            </li> 
+            <li>
+                <a href="#{request.contextPath}/clodwar/squads.xhtml">Squads</a>
+            </li>  
+        <c:if test="${AuthenticationBean.getIdentityLogin() == null}" >
+            <li style="float: right">
+                <a href="#{request.contextPath}/clodwar/registration.xhtml">Register</a>
+            </li>
+            <li style="float: right">
+                <a href="#{request.contextPath}/clodwar/login.xhtml">Log In</a>
+            </li>
+        </c:if>
+        <li>
+            <a href="#{request.contextPath}/clodwar/manual.xhtml">Manual</a>
+        </li>
+        <c:if test="${AuthenticationBean.getIdentityLogin() == null}" >
+            <li>
+                <a href="#{request.contextPath}/">SMWeb</a>
+            </li>
+        </c:if>
+        <c:if test="${AuthenticationBean.getIdentityLogin() != null}" >
+            <li style="float: right">
+                <h:form>
+                    <h:commandLink class="btn btn-link" style="margin-top: 8px; margin-right: 5px" value="Log out" action="#{AuthenticationBean.logoutClod()}"/>
+                </h:form>
+            </li>
+            <li style="float: right">
+                <a href="#{request.contextPath}/clodwar/statistics/pilot-stats.xhtml?login=#{AuthenticationBean.getIdentityLogin()}">Logged In: #{AuthenticationBean.getIdentityLogin()}</a>
+            </li>
+            <li style="float: right">
+                <a href="#{request.contextPath}/clodwar/lobby.html" target="_blank">Lobby</a>
+            </li>
+        </c:if>
+    </ul>
+    
+</ui:composition>

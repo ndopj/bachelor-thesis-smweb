@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/templates/public-template.xhtml"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Registration
+    </ui:define>
+
+    <ui:define name="content">
+        <h1>Registration form</h1>
+        <h:form id="register">
+            <table>
+                <tr>
+                    <td>login: </td>
+                    <td><h:inputText id="login" required="true"
+                                     requiredMessage="Login can not be empty"
+                                     value="#{RegistrationBean.pilot.login}"
+                                     validator="#{RegistrationBean.validateLogin}"/><br/>
+                        <h:message for="login" styleClass="error"/></td>
+                    <td>Login for the website.</td>
+                </tr>
+                <tr>
+                    <td>IL-2 nickname: </td>
+                    <td><h:inputText id="nick" required="true"
+                                     requiredMessage="Game nickname can not be empty"
+                                     value="#{RegistrationBean.pilot.il2NickName}"
+                                     validator="#{RegistrationBean.validateNick}"/><br/>
+                        <h:message for="nick" styleClass="error"/></td>
+                    <td>Enter your GAME nickname -- the name you are using in the game. Must be exactly the same as you are using in HyperLobby and/or in the game itself.</td>
+                </tr>
+				 <tr>
+                    <td>TeamSpeak nickname: </td>
+                    <td><h:inputText id="ts3nick" required="true"
+                                     requiredMessage="TS3 nickname  can not be empty"
+                                     value="#{RegistrationBean.pilot.ts3NickName}"
+                                     validator="#{RegistrationBean.validateTs3Nick}"/><br/>
+                        <h:message for="ts3nick" styleClass="error"/></td>
+                    <td>Your TeamSpeak nickname.</td>
+                </tr>				
+                <tr>
+                    <td>Password: </td>
+                    <td><h:inputSecret id="pass" required="true"
+                                       requiredMessage="Password can not be empty"
+                                       value="#{RegistrationBean.passwd}"/><br/>
+                        <h:message for="pass" styleClass="error"/></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Retype the password: </td>
+                    <td><h:inputSecret id="passCheck" rendered="true"
+                                       requiredMessage="Please retype your password again."
+                                       validator="#{RegistrationBean.validatePasswds}"
+                                       value="#{RegistrationBean.passwdCheck}">
+                            <f:attribute name="passwordId" value="register:pass" /><br/>
+                        </h:inputSecret>
+                        <h:message for="passCheck" styleClass="error"/></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>E-mail: </td>
+                    <td><h:inputText value="#{RegistrationBean.pilot.email}"/></td>
+                    <td>Optional. It may be just an additional information for the generals, just in case he/she would want to contact you.</td>
+                </tr>
+                <tr>
+                    <td>Side: </td>
+                    <td><h:selectOneMenu id="gender" value="#{RegistrationBean.pilot.side}">
+                            <f:selectItems value="#{RegistrationBean.sideEnumValues}" var="g"
+                                           itemLabel="#{g.label}"/>
+                        </h:selectOneMenu>
+                    </td>
+                    <td>Choose your side.</td>
+                </tr>
+<!--
+                <tr>
+                    <td>preferovaná letka: </td>
+                    <td><h:selectOneMenu/></td>
+                    <td>Automaticky (generálom) by Vám mohla byť pridelená letka, ktorá operuje s vybraným typom a ktorá má málo pilotov. </td>
+                </tr>
+                <tr>
+                    <td>preferovaný typ: </td>
+                    <td><h:selectOneMenu/></td>
+                    <td>Automatické pridelenie: generál by Vás mohol prideliť ku typu, ktorý má nedostatok pilotov. </td>
+                </tr>
+-->
+                <tr>
+                    <td></td>
+                    <td colspan="2"><h:messages styleClass="error"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><h:commandButton value="Register as pilot" action="#{RegistrationBean.registerPilot()}"/></td>
+                </tr>
+            </table>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
+

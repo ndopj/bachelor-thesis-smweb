@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Reconnaissance Data
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="#{request.contextPath}/clodwar/templates/background/css/full5.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">
+        <style>
+            .table.recon td:nth-child(4), table.recon td:nth-child(5){
+                text-align: right;
+            }​ 
+        </style>  
+        <style>                        
+            .table.recon td:nth-child(2){
+                text-align: center;
+            }​ 
+        </style>
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.6); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+            <div class="col-lg-12">
+                <h1 class="text-center">Reconnaissance Flights</h1>
+            </div> 
+            <div class="col-md-10 col-md-offset-1" style="margin-top: 20px">
+                <h:form>
+                    <table class="table table-striped clicktable recon stripe table-bordered" id="orders" style="background-color: rgba(255,255,255,0.6)">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th>Sortie Id</th>
+                            <th style="text-align: center">Date</th> 
+                            <th>Target sector</th> 
+                            <th style="text-align: right">Num of players</th>
+                            <th style="text-align: right">Num of photos</th>                                                            
+                        </tr>
+                        <c:forEach items="${ClodwarPilotBean.listOfAllReconFlights}" var="recon">
+                            <c:if test="${AuthenticationBean.identity.side == recon.side}" >
+                                <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/pilot/recon-detail.jsf?id=#{recon.sortieId}'>
+                                    <td><a href="#{request.contextPath}/clodwar/statistics/sortie.xhtml">#{recon.sortieId}</a></td>
+                                    <td>#{recon.date.toLocaleString()}</td>                            
+                                    <td>#{recon.sector}</td>
+                                    <td>#{recon.numOfPlayers}</td>
+                                    <td>#{recon.numOfPhotos}</td>  
+                                </tr>       
+                            </c:if>
+                        </c:forEach>  
+                    </table>
+                </h:form> 
+            </div>
+        </div>
+    </ui:define>   
+    
+</ui:composition>
+</html>
+

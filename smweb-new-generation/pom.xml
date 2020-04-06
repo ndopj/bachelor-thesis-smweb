@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent> <!-- main spring boot dependency -->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.8.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <!-- global versions -->
+        <java.version>11</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <!-- smweb-ng-web module versions -->
+        <joinfaces.version>4.0.1</joinfaces.version>
+
+        <!-- smweb-ng-core module versions -->
+        <common-io.version>1.3.2</common-io.version>
+        <apache.commons-math3.version>3.6.1</apache.commons-math3.version>
+        <google.guava.version>27.1-jre</google.guava.version>
+
+        <!-- smweb-ng-clodwar-core module versions -->
+        <gson.version>2.8.5</gson.version>
+        <gson-fire.version>1.8.3</gson-fire.version>
+        <json-custom.version>20190722</json-custom.version>
+
+        <!-- smweb-ng-spring-launcher module versions -->
+        <jsf.version>2.3</jsf.version>
+        <javax.cdi-api.version>2.0</javax.cdi-api.version>
+        <reactive.streams.version>1.0.3</reactive.streams.version>
+    </properties>
+
+    <groupId>cz.sm</groupId>
+    <artifactId>smweb-new-generation</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>smweb-ng-core</module>
+        <module>smweb-ng-web</module>
+        <module>smweb-ng-spring-launcher</module>
+        <module>smweb-ng-security</module>
+        <module>smweb-ng-clodwar-web</module>
+        <module>smweb-ng-clodwar-core</module>
+    </modules>
+</project>

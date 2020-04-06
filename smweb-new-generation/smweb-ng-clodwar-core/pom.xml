@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>smweb-new-generation</artifactId>
+        <groupId>cz.sm</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+    <artifactId>smweb-ng-clodwar-core</artifactId>
+    <!-- groupId is inherited -->
+    <!-- version is inherited -->
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>cz.sm</groupId>
+            <artifactId>smweb-ng-security</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <!-- by marking tomcat-embed-websocket dependency as provided we allow this module
+             to be usable in both, heavy Java application servers like Wildfly or Glassfish
+             and lightweight servlet containers like Tomcat and Jetty. -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JSON format extended functionality providers !-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gsonfire</groupId>
+            <artifactId>gson-fire</artifactId>
+            <version>${gson-fire.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${json-custom.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>smweb-ng-clodwar-core</finalName>
+    </build>
+</project>

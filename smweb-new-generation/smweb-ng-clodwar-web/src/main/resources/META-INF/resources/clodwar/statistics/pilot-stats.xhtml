@@ -1,0 +1,340 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Pilot Statistics
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="/SMWeb/clodwar/templates/background/css/full11.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">         
+        <style>
+            .table.sort td:last-child, table.sort td:first-child{
+                text-align: center;
+            }​
+        </style>      
+        <style>                        
+            .table.sort td:nth-child(6), table.sort td:nth-child(7), table.vpilots td:first-child {
+                text-align: right;
+            }​ 
+        </style>   
+        <style>
+            h3 {
+                color: black;
+            }
+        </style>
+        <style>                        
+            .table.vpilots td:nth-child(2), table.vpilots td:last-child, table.firstleft td:first-child  {
+                text-align: left;
+            }​ 
+        </style>
+
+    </ui:define>
+    
+    <ui:define name="body">
+        <script type="text/javascript">
+
+            function showForm(id, check) {
+
+                var obj = document.getElementById(id);
+                if (check) {
+                    obj.style.display = "table";
+                } else {
+                    obj.style.display = "none";
+                }
+            }
+            showForm('vPilotsForm', false);                                 
+        </script>
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.7); margin-top: 50px; margin-bottom: 50px; min-height: 80vh">
+            <c:set value="${ClodwarStatisticsBean.getPlayerByLogin(param['login'])}" var="player"></c:set>
+            <div class="col-lg-8 col-lg-offset-2" style="margin-bottom: 50px">
+                <c:if test="#{ClodwarStatisticsBean.getPlayerByLogin(param['login']) == null}" >
+                    <h1 class="text-center" style="color: red">Player with login: #{param['login']} does not exist !</h1>
+                    <script>
+                        window.stop();
+                    </script> 
+                </c:if>
+                <h1 class="text-center">Pilot: <b>#{player.login}</b></h1>
+            </div>  
+            <div class="col-lg-2">   
+                <ul class="list-inline">    
+                    <c:if test="#{player.side == 'BLUE'}">
+                        <li><img src="/SMWeb/clodwar/templates/background/images/Allies.png" style="max-height: 36px; max-width: 36px; margin-top: -5px"/></li>
+                        <li><h3 style="color: blue; margin-top: 25px">Allies</h3></li>
+                    </c:if> 
+                    <c:if test="#{player.side == 'RED'}">
+                        <li><img src="/SMWeb/clodwar/templates/background/images/Axis.png" style="max-height: 36px; max-width: 36px; margin-top: -5px"/></li>
+                        <li><h3 style="color: red; margin-top: 25px">Axis</h3></li>
+                    </c:if> 
+                </ul> 
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h:form>
+                        <table class="table table-striped stripe firstleft table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                                <th>Player statistics</th>
+                                <th style="text-align: right">#</th>
+                            </tr>
+                            <tr>
+                                <td>Number of virtual pilots: </td>
+                                <td>#{player.numOfVirtualPilots}</td>
+                            </tr>
+                            <tr>
+                                <td>Number of used planes: </td>
+                                <td>#{player.numOfUsedPlanes}</td>
+                            </tr>
+                            <tr>
+                                <td>Flight time: </td>
+                                <td>#{player.flighTime}</td>
+                            </tr>
+                            <tr>
+                                <td>Number of flights: </td>
+                                <td>#{player.numOfSorties}</td>
+                            </tr>
+                            <tr>
+                                <td>Enemy pilots killed: </td>
+                                <td>#{player.kills}</td>
+                            </tr>
+                            <tr>
+                                <td>Enemy planes shot down: </td>
+                                <td>#{player.planeKills}</td>
+                            </tr>
+                            <tr>
+                                <td>Enemy Parachutes shot down: </td>
+                                <td>#{player.enemyChutesShot}</td>
+                            </tr>
+                            <tr>
+                                <td>Destroyed ground targets: </td>
+                                <td>#{player.groundKills}</td>
+                            </tr>
+                            <tr>
+                                <td>Lost virtual pilots: </td>
+                                <td>#{player.lostVirtualPilots}</td>
+                            </tr>
+                            <tr>
+                                <td>Lost planes: </td>
+                                <td>#{player.lostPlanes}</td>
+                            </tr>
+                            <tr>
+                                <td>Currently captured virtual pilots of this player: </td>
+                                <td>#{player.capturedVirtualPilots}</td>
+                            </tr>
+                            <tr>
+                                <td>Currently blocked virtual pilots of this player: </td>
+                                <td>#{player.blockedVirtualPilots}</td>
+                            </tr>
+                        </table>
+                    </h:form> 
+                </div>
+                <c:set value="${ClodwarStatisticsBean.getVPilotsStatsSumForPlayer(player.login)}" var="vpilotSum"></c:set> <!-- switch player.login for 'Rambo' for presentation-->
+                <div class="col-md-6">
+                    <h:form>
+                        <table class="table table-striped stripe firstleft table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                                <th>The average value of statistical data per the virtual pilot</th>
+                                <th style="text-align: right">#</th>
+                            </tr>
+                            <tr>
+                                <td>Combat flights: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.numOfSorties / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Enemy planes shot down: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.planeKills / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Parachutes shot down: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.chuteKills / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Destroyed ground targets: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.groundkills / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Planes used: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.planesUsed / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Plane repairs: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.planeRepairs / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Rounds shot: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.roundsShot / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Captured virtual pilots: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.capturedCount / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Rescued virtual pilots: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.rescuedCount / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Duration of blocking pilots (in minutes): </td>
+                                <td>#{ClodwarBean.round(vpilotSum.blockedSum / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Ejected from the plane: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.ejectedCount / player.numOfVirtualPilots)}</td>
+                            </tr>
+                            <tr>
+                                <td>Fly-time: </td>
+                                <td>#{ClodwarBean.round(vpilotSum.flightTimeSum / player.numOfVirtualPilots)}</td>
+                            </tr>
+                        </table>
+                    </h:form> 
+                </div>                
+                <div class="col-md-6">
+                    <h3 class="text-center">Aircrafts shot down by this player</h3>
+                    <h:form>
+                        <table class="table table-striped stripe firstleft table-bordered" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                                <th>Type of aircraft</th>
+                                <th style="text-align: right">Count</th>                                
+                            </tr>   
+                            <c:forEach items="#{player.planesShotDown.keySet()}" var="plane">
+                                <tr>                              
+                                    <td>#{plane}</td>
+                                    <td>#{player.planesShotDown.get(plane)}</td>                               
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </h:form> 
+                    <h3 class="text-center">Aircrafts used by this player</h3>
+                    <h:form>
+                        <table class="table table-striped stripe firstleft table-bordered" style="background-color: rgba(255,255,255,0.6); float: right; text-align: right">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                                <th>Type of aircraft</th>
+                                <th style="text-align: right">Count</th>  
+                                <th style="text-align: right">Destroyed</th>
+                            </tr> 
+                            <c:forEach items="#{player.planesUsed.keySet()}" var="plane">
+                                <tr>                              
+                                    <td>#{plane}</td>
+                                    <td>#{player.planesUsed.get(plane)}</td>
+                                    <td>#{player.planesLost.get(plane)}</td>                                
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </h:form> 
+                </div>
+                <div class="col-md-6">
+                    <h3 class="text-center">Alive Virtual pilots</h3>
+                    <h:form>
+                        <table class="table table-striped stripe clicktable vpilots table-bordered" id="alivevpilots" style="background-color: rgba(255,255,255,0.6); text-align: center">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                                <th style="text-align: right">#</th>
+                                <th>Name</th>
+                                <th style="text-align: center">Career Started</th>
+                                <th>State</th>
+                            </tr>
+                            <c:set value="1" var="enum"></c:set>
+                            <c:forEach items="${ClodwarProfileBean.getAliveVpilotsOfPlayer(player.login)}" var="vpilot"> <!-- switch player.login for 'Rambo' for presentation-->
+                                <tr class='clickable-row' data-href='/SMWeb/clodwar/profile/vpilot.jsf?name=#{vpilot.urlName}'>                              
+                                    <td>#{enum}</td>
+                                    <td>#{vpilot.name}</td>
+                                    <td>#{vpilot.started.toLocaleString()}</td>
+                                    <td>#{vpilot.status}</td>                                
+                                </tr>
+                                <c:set value="#{enum + 1}" var="enum"></c:set>
+                            </c:forEach> 
+                        </table>
+                    </h:form>
+                    <h3 class="text-center">Previous Virtual Pilots (last 5)</h3>
+                    <h:form>
+                        <table class="table table-striped stripe clicktable vpilots table-bordered" id="lastvpilots" style="background-color: rgba(255,255,255,0.6); text-align: center">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                                <th style="text-align: right">#</th>
+                                <th>Name</th>
+                                <th style="text-align: center">Career Started</th>
+                                <th style="text-align: center">Career ended</th>
+                                <th>Terminal state</th>
+                            </tr>
+                            <c:set value="1" var="enum"></c:set>
+                            <c:forEach items="${ClodwarProfileBean.getLastDiedVPilotsOfPlayer(player.login)}" var="vpilot">  <!-- switch player.login for 'Rambo' for presentation-->
+                                <tr class='clickable-row' data-href='/SMWeb/clodwar/profile/vpilot.jsf?name=#{vpilot.urlName}'>                              
+                                    <td>#{enum}</td>
+                                    <td>#{vpilot.name}</td>
+                                    <td>#{vpilot.started.toLocaleString()}</td>
+                                    <td>#{vpilot.ended.toLocaleString()}</td>
+                                    <td>#{vpilot.status}</td>                                
+                                </tr>
+                                <c:set value="#{enum + 1}" var="enum"></c:set>
+                            </c:forEach>
+                        </table>
+                    </h:form>
+                    <label class="text-center center-block" style="color: black; font-size: 24px; font-weight: normal; cursor: pointer">
+                        <input type="checkbox" onclick="showForm('vPilotsForm', this.checked);"> Show all virtual pilots of this player</input>
+                    </label>
+                    <h:form id="vPilotsForm" style="min-width: 100%; display: none">                        
+                        <table class="table table-striped stripe clicktable vpilots table-bordered" id="allvpilots" style="background-color: rgba(255,255,255,0.6); text-align: center">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                                <th style="text-align: right">#</th>
+                                <th>Name</th>
+                                <th style="text-align: center">Career Started</th>
+                                <th style="text-align: center">Career ended</th>
+                                <th>State</th>
+                            </tr>
+                            <c:set value="1" var="enum"></c:set>
+                            <c:forEach items="${ClodwarProfileBean.getVpilotsByPlayer(player.login)}" var="vpilot"> <!-- switch player.login for 'Rambo' for presentation-->
+                                <tr class='clickable-row' data-href='/SMWeb/clodwar/profile/vpilot.jsf?name=#{vpilot.urlName}'>                              
+                                    <td>#{enum}</td>
+                                    <td>#{vpilot.name}</td>
+                                    <td>#{vpilot.started.toLocaleString()}</td>
+                                    <td>#{vpilot.ended.toLocaleString()}<c:if test="${vpilot.ended == null}">-</c:if></td>
+                                    <td>#{vpilot.status}</td>                                
+                                </tr>
+                                <c:set value="#{enum + 1}" var="enum"></c:set>
+                            </c:forEach> 
+                        </table>          
+                    </h:form>
+                </div>                
+            </div>
+            <div class="row">                
+                <div class="col-md-10 col-md-offset-1">
+                    <h3>Sorties</h3>
+                    <h:form>
+                        <table class="table table-striped clicktable stripe sort table-bordered" id="sorties" style="background-color: rgba(255,255,255,0.6)">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                                <th style="text-align: center">Date</th>
+                                <th>Type</th> 
+                                <th>Result</th>
+                                <th>Virt. pilot</th>
+                                <th>Plane</th>
+                                <th style="text-align: right">Air Kills</th> 
+                                <th style="text-align: right">Ground Kills</th>
+                                <th style="text-align: center">Fly-Time</th>                                
+                            </tr>
+                            <c:forEach items="${ClodwarStatisticsBean.getPlayersSorties(player.login)}" var="sortie">
+                                <tr class='clickable-row' data-href='/SMWeb/clodwar/statistics/sortie.jsf?id=#{sortie.id}'>                              
+                                    <td>#{sortie.started.toLocaleString()}</td>
+                                    <td>#{sortie.typeRed}</td>
+                                    <td>#{sortie.pilotStats.status}</td>
+                                    <td><a href="/SMWeb/clodwar/profile/vpilot.jsf?name=#{sortie.pilotStats.getvPilot().urlName}">#{sortie.pilotStats.getvPilot().name}</a></td>
+                                    <td><a href="/SMWeb/clodwar/profile/plane.jsf?name=#{sortie.pilotStats.plane.urlName}">#{sortie.pilotStats.plane.name}</a></td>
+                                    <td>#{sortie.pilotStats.planeKills}</td>   
+                                    <td>#{sortie.pilotStats.groundKills}</td>   
+                                    <td>#{sortie.pilotStats.flightTime}</td>   
+                                </tr>
+                            </c:forEach>                          
+                        </table>
+                    </h:form> 
+                </div>
+            </div>
+        </div>         
+    </ui:define>   
+    
+</ui:composition>

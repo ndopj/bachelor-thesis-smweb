@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        #{param['name']} airfield
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="/SMWeb/clodwar/templates/background/css/full7.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">
+        <style>
+            .table.firstleft td:first-child {
+                text-align: left;
+            }
+            h4 {
+                color: black;
+            }
+        </style>
+        <style>
+            .table.planes td:first-child, table.planes td:nth-child(6) {
+                text-align: right;
+            }
+        </style>
+        <style>
+            .table.planes td:last-child {
+                text-align: center;
+            }
+        </style>
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.7); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+            <c:set value="${ClodwarProfileBean.getHomebaseByName(param['name'])}" var="homebase"></c:set>
+            <div class="col-lg-12">
+                <c:if test="#{ClodwarProfileBean.getHomebaseByName(param['name']) == null}" >
+                    <h1 class="text-center" style="color: red">Airfield with name: #{param['name']} does not exist !</h1>
+                    <script>
+                        window.stop();
+                    </script> 
+                </c:if>
+                <h1 class="text-center">#{homebase.name} airfield</h1>
+            </div> 
+            <c:if test="#{ClodwarProfileBean.getHomebaseByName(param['name']) != null and ClodwarProfileBean.getHomebaseByName(param['name']).side != AuthenticationBean.identity.side}" >
+                <h1 class="text-center" style="color: red">You are not allowed to enter this page !</h1>
+                <script>
+                    window.stop();
+                </script>                    
+            </c:if> 
+            <div class="row" style=" margin-left: 0px; margin-right: 0px">
+                <div class="col-md-4">
+                    <h4>Sector: [#{homebase.position}]</h4>
+                    <h4>Exact position: [#{homebase.xCoordinate}, #{homebase.yCoordinate}]</h4>
+                    <label class="text-center">Health: </label>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success" role="progressbar" style="width: #{(homebase.health / 100)*100}%">
+                            <c:if test="#{homebase.health &gt;= 7}" >
+                                #{ClodwarBean.round(homebase.health)}%
+                            </c:if>
+                        </div>
+                        <div class="progress-bar progress-bar-danger" role="progressbar" style="text-align: left; width: #{(100 - homebase.health)/(100)*100}%">    
+                            <c:if test="#{homebase.health &lt; 7}" >
+                                <div style=" margin-left: 3px">#{ClodwarBean.round(homebase.health)}%</div>
+                            </c:if>
+                        </div>
+                    </div>
+                    <h4>Resources: #{homebase.resourcesWeight} / #{homebase.resourcesLimit} kg (#{(ClodwarBean.round((homebase.resourcesWeight / homebase.resourcesLimit)* 100))}%)</h4>
+                    <h:form>
+                        <h3 class="text-center" style="color: black">Resources</h3>
+                        <table class="table table-striped firstleft stripe table-bordered" id="resources" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                            <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                                <th>Type</th>
+                                <th style="text-align: right">Amount</th> 
+                            </tr>
+                            <c:forEach items="#{homebase.resources}" var="item">
+                                <tr>
+                                    <td>#{item.name}</td>
+                                    <td>#{item.count}</td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </h:form>
+                </div>  
+                <div class="col-md-8">
+                    <svg viewBox="0 0 2747 2363" version="1.1" class="svg-content"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                       <image xlink:href="/SMWeb/clodwar/templates/background/mapCOD.jpg" x="0" y="0" class="img-responsive" height="100%" width="100%"/>
+                       <circle cx="#{homebase.xCoordinate}" cy="#{homebase.yCoordinate}" r="14" stroke="black" stroke-width="7" fill="rgba(255, 255, 230,0.8)"/>    
+                       <c:if test="#{((homebase.xCoordinate + 40) + ClodwarBean.getStringWidth(homebase.name)*6 + 240) &gt; 2747}">
+                            <rect width="#{ClodwarBean.getStringWidth(homebase.name)*6 + 240}" height="75" x="#{homebase.xCoordinate - (ClodwarBean.getStringWidth(homebase.name)*6 + 280)}" y="#{homebase.yCoordinate - 40}" style="fill: rgba(255, 255, 230,0.7); stroke: rgba(0,0,0,1); stroke-width: 3"/>
+                            <text x="#{homebase.xCoordinate - (ClodwarBean.getStringWidth(homebase.name)*6 + 270)}" y="#{homebase.yCoordinate + 20}" style="font-family: Helvetica,Arial,sans-serif;font-weight:bold;font-size:65; fill :rgba(59, 39, 18,1); ">#{homebase.name} airfield</text>
+                       </c:if>
+                       <c:if test="#{((homebase.xCoordinate + 40) + ClodwarBean.getStringWidth(homebase.name)*6 + 240) &lt; 2747}">
+                            <rect width="#{ClodwarBean.getStringWidth(homebase.name)*6 + 240}" height="75" x="#{homebase.xCoordinate + 40}" y="#{homebase.yCoordinate - 40}" style="fill: rgba(255, 255, 230,0.7); stroke: rgba(0,0,0,1); stroke-width: 3"/>
+                            <text x="#{homebase.xCoordinate + 50}" y="#{homebase.yCoordinate + 20}" style="font-family: Helvetica,Arial,sans-serif;font-weight:bold;font-size:65; fill :rgba(59, 39, 18,1); ">#{homebase.name} airfield</text>
+                       </c:if>
+                    </svg>
+                </div> 
+            </div>
+            <div class="col-md-10 col-md-offset-1">
+                <h3>Planes stationed on this airfield</h3>
+                <h:form>
+                    <table class="table table-striped clicktable planes stripe table-bordered" id="planes" style="background-color: rgba(255,255,255,0.6); width: 100%">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style="text-align: right">#</th>
+                            <th>Name</th>
+                            <th>Type</th> 
+                            <th>Assigned to</th>
+                            <th>Status</th> 
+                            <th style="text-align: right">Fuel</th>                            
+                            <th style="text-align: center">Blocked until</th>                                 
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="#{homebase.planes}" var="plane">
+                            <tr class='clickable-row' data-href='/SMWeb/clodwar/profile/plane.jsf?name=#{plane.urlName}'>
+                                <td>#{enum}</td>
+                                <td>#{plane.name}</td>
+                                <td>#{plane.type}</td>
+                                <td><a href="/SMWeb/clodwar/statistics/pilot-stats.jsf?login=#{plane.owner}">#{plane.owner}</a><c:if test="${plane.owner == null}">-</c:if></td> 
+                                <td>#{plane.status}</td> 
+                                <td>#{ClodwarBean.round(plane.fuel)}%</td> 
+                                <td title="#{ClodwarBean.getBlockedTitile(plane.blocked)}">#{plane.blocked.toLocaleString()}<c:if test="#{plane.blocked == null}">-</c:if></td>
+                            </tr> 
+                            <c:set value="#{enum + 1}" var="enum"></c:set>
+                        </c:forEach>                                        
+                    </table>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>   
+    
+</ui:composition>

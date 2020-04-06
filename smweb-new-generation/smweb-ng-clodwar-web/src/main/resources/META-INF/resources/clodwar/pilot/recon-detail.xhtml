@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Recon Flight Detail
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="#{request.contextPath}/clodwar/templates/background/css/full6.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">
+        <style>
+            .table.firstleft td:first-child {
+                text-align: left;
+            } 
+            h3 {
+                color: black;
+            }
+        </style>
+    </ui:define>
+   
+    <ui:define name="content">       
+        <c:set value="#{ClodwarPilotBean.getReconFlightById(param['id'])}" var="recon"></c:set>
+        <div class="row" style="margin-top: 50px">
+            <div class="col-lg-12">
+                <c:if test="#{ClodwarPilotBean.getReconFlightById(param['id']) == null}" >
+                    <h1 class="text-center" style="color: red">Recon flight with Id #{param['id']} does not exist !</h1>
+                    <script>
+                        window.stop();
+                    </script> 
+                </c:if> 
+                <h1 class="text-center">Recon Flight Detail</h1>
+                <c:if test="#{ClodwarPilotBean.getReconFlightById(param['id']) != null and ClodwarPilotBean.getReconFlightById(param['id']).side != AuthenticationBean.identity.side}" >
+                    <h1 class="text-center" style="color: red">You are not allowed to enter this page !</h1>
+                    <script>
+                        window.stop();
+                    </script>                    
+                </c:if> 
+                <h3 class="text-center">Sortie: #{recon.sortieId}</h3>
+                <h3 class="text-center" style="margin-top: 0px">Target sector: #{recon.sector}</h3>
+                <h3 class="text-center" style="margin-bottom: 30px; margin-top: 0px">Number of players: #{recon.numOfPlayers}</h3>
+                <p>#{recon.description}</p>
+            </div>            
+        </div>        
+        <div class="row" style="margin-bottom: 50px">
+            <h3 style=" margin-left: 15px">Capcured photos (#{recon.numOfPhotos})</h3>
+            <c:forEach items="${recon.photos}" var="photo">
+                <div class="col-md-4">
+                    <a href="#{photo}" target="_blank">
+                        <img class="img-responsive" src="#{photo}" alt=""/>
+                    </a>
+                    <h4>
+                        <a href="#">#{ClodwarBean.lastString(photo.split('/'))}</a>
+                    </h4>
+                </div>                     
+            </c:forEach>  
+            <div class="col-lg-12">               
+                <a href="#{request.contextPath}/clodwar/pilot/reconnaissance.xhtml" class="btn btn-default" role="button" style="margin-bottom: 50px">Back to all Recon flights</a>
+            </div>
+        </div>
+    </ui:define>   
+    
+</ui:composition>
+</html>
+

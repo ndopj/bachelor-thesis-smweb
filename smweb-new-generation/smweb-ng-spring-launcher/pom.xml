@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent> <!-- defines parent pom to inherit basic configuration -->
+        <artifactId>smweb-new-generation</artifactId>
+        <groupId>cz.sm</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+    <artifactId>smweb-ng-spring-launcher</artifactId>
+    <!-- groupId is inherited -->
+    <!-- version is inherited -->
+    <packaging>war</packaging>
+
+    <dependencies>
+        <!-- Here follows list of all modules which
+             should be used when application starts -->
+        <dependency>
+            <groupId>cz.sm</groupId>
+            <artifactId>smweb-ng-web</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.sm</groupId>
+            <artifactId>smweb-ng-clodwar-web</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.sm</groupId>
+            <artifactId>smweb-ng-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.sm</groupId>
+            <artifactId>smweb-ng-clodwar-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.sm</groupId>
+            <artifactId>smweb-ng-security</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- by marking starter-tomcat dependency as provided we allow final WAR file
+             to be deployed on both, heavy Java application servers like Wildfly or Glassfish
+             and lightweight servlet containers like Tomcat and Jetty. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- In case of deploying application on full JavaEE spec. servers like Wildfly,
+             these dependencies will be provided by JavaEE server implementation -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>javax.faces-api</artifactId>
+            <version>${jsf.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>${javax.cdi-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <!-- old final commonly used version
+                 so there is no need to centralize it -->
+            <version>1.2</version>
+        </dependency>
+
+        <!-- This is needed for full JavaEE containers, see:
+             https://developer.jboss.org/thread/276373 -->
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>${reactive.streams.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>smweb-ng-spring-launcher</finalName>
+        <plugins>
+            <!-- This plugin is needed so Wildfly can run a Java 10+ application.
+                 See https://jira.spring.io/browse/SPR-16990 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Dependencies>jdk.unsupported</Dependencies>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin> <!-- plugin to create über WAR file containing all dependencies -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <addResources>true</addResources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

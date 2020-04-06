@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Order Detail
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="#{request.contextPath}clodwar/templates/background/css/full6.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="head">         
+        <style>
+            .table.firstleft td:first-child {
+                text-align: left;
+            } 
+        </style>
+    </ui:define>
+    
+    <ui:define name="content">
+        <c:set value="#{ClodwarPilotBean.getOrderById(param['id'])}" var="order"></c:set>
+        <div class="row" style="margin-top: 50px">
+            <div class="col-lg-12">                
+                <c:if test="#{ClodwarPilotBean.getOrderById(param['id']) == null}" >
+                    <h1 class="text-center" style="color: red">Order with Id #{param['id']} does not exist !</h1>
+                    <script>
+                        window.stop();
+                    </script> 
+                </c:if> 
+                <h1 class="text-center">Order #{order.id}</h1>
+                <c:if test="#{ClodwarPilotBean.getOrderById(param['id']) != null and ClodwarPilotBean.getOrderById(param['id']).side != AuthenticationBean.identity.side}" >
+                    <h1 class="text-center" style="color: red">You are not allowed to enter this page !</h1>
+                    <script>
+                        window.stop();
+                    </script>                    
+                </c:if> 
+                <h3 class="text-center">Issued by: #{order.issuedBy}</h3>
+                <h3 class="text-center" style="margin-top: 0px">Order type: #{order.type}</h3>
+                <h3 class="text-center" style="margin-bottom: 30px; margin-top: 0px">Ideal for #{order.numOfPlayers} players</h3>
+                <p>#{order.assignment}</p>
+            </div>            
+        </div>        
+        <div class="row" style="margin-bottom: 50px">
+            <h3 style=" margin-left: 15px">Mission images</h3>
+            <c:forEach items="${order.images}" var="photo">
+                <div class="col-md-4">
+                    <a href="#{photo}" target="_blank">
+                        <img class="img-responsive" src="#{photo}" alt=""/>
+                    </a>
+                    <h4>
+                        <a href="#">#{ClodwarBean.lastString(photo.split('/'))}</a>
+                    </h4>
+                </div>                     
+            </c:forEach> 
+            <div class="col-lg-12">
+                <h3>Mission documents</h3>
+                <h:form>
+                    <table class="table clicktable table-bordered" id="docs" style="background-color: rgba(240,240,255,0.6)">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style="width: 20%">Filename</th>
+                            <th>Description</th> 
+                            <th style="width: 10%">Type</th>                              
+                        </tr>
+                        <c:forEach items="${order.otherFiles}" var="file">
+                        <tr class='clickable-row' data-href='#{file}'>
+                            <td><a href="#{file}" target="_blank">#{ClodwarBean.lastString(file.split('/'))}</a></td>
+                            <td>Document with plan of the attack.</td>
+                            <td>#{ClodwarBean.lastString(file.split('/')).split('.')[1]}</td>   
+                        </tr>
+                        </c:forEach> 
+                        <!--tr class='clickable-row' data-href='#docs'>   Uncomment for presentational purpose.
+                            <td><a href="#">Attack_plan.pdf</a></td>
+                            <td>Document with plan of the attack.</td>
+                            <td>.pdf</td>
+                        </tr>
+                        <tr class='clickable-row' data-href='#docs'>
+                            <td><a href="#">PlanesAndLoudout.xls</a></td>
+                            <td>Tables with planes an their required loudouts. If you want to participate in the mission, please adjust your loudout accordingly.</td>
+                            <td>.xls</td>
+                        </tr>
+                        <tr class='clickable-row' data-href='#docs'>
+                            <td><a href="#">BackgroundStory.doc</a></td>
+                            <td>Background story to this mission.</td>
+                            <td>.doc</td>
+                        </tr-->                            
+                    </table>
+                </h:form> 
+                <c:if test="#{order.flownBySorties.size() != 0}">
+                    <h3 style=" margin-bottom: 15px"> This order was already flown by these sorties: 
+                        <c:forEach items="${order.flownBySortiesImm}" var="sortie">
+                            <a href="#{request.contextPath}/clodwar/statistics/sortie.jsf?id=#{sortie.id}">#{sortie.id}</a>,
+                        </c:forEach>
+                    </h3>
+                </c:if>
+                <a href="#" class="btn btn-default" role="button" style="margin-bottom: 50px">Go to the Top</a> 
+                <a href="#{request.contextPath}/clodwar/pilot/orders.xhtml" class="btn btn-default" role="button" style="margin-bottom: 50px">Back to all Orders</a>
+                <a href="#{request.contextPath}/clodwar/lobby.html" class="btn btn-default pull-right" role="button" style="margin-bottom: 50px">Go to Lobby</a>
+            </div>
+        </div>
+    </ui:define>   
+    
+</ui:composition>
+</html>
+

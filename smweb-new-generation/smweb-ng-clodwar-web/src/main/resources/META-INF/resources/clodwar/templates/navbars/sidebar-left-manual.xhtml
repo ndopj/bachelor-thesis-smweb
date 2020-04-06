@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <div id="wrapper">
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="#">Manual: </a>
+                </li>
+                <li>
+                    <a href="#1">1. Vestibulum hendrerit</a>
+                </li>
+                <li>
+                    <a href="#2">2. Maecenas condimentum</a>
+                </li>
+                <li>
+                    <a href="#3">3. Vivamus id semper</a>
+                </li>
+            </ul>
+        </div>
+        <div class="container">
+            <ui:insert name="content-sidebar">
+                <div class="row" style="background-color: rgba(255,255,255,0.45); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+                    <div class="col-lg-12">
+                        <h1 class="text-center">ClodWar</h1>
+                        <p>Úvodná stránka Clodwar.</p>
+                    </div>
+                </div>
+            </ui:insert>
+        </div>        
+    </div>
+</ui:composition>

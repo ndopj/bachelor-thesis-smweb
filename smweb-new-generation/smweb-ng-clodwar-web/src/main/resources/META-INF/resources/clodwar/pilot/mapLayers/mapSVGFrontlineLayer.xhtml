@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+                    
+    <script>
+        var extent = [0, 0, 2747, 2363];
+        var projection = new ol.proj.Projection({
+            code: 'EPSG:3857',
+            units: 'pixels',
+            metersPerUnit: 1273,
+            extent: extent
+        });
+       
+        var frontlineSVGLayer = new ol.layer.Image({
+            source: new ol.source.ImageStatic({
+            attributions: [],
+            url: 'data:image/svg+xml;utf8,<svg width="1256px" height="1080px" viewBox="0 0 2747 2363" version="1.1" class="svg-content" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <c:forEach items="#{ClodwarProfileBean.frontlineSectors}" var="sector"> <c:if test="#{sector.side == 'RED'}"> <c:if test="#{sector.leftFrontline}"> <line x1="#{sector.getxCoordiante() + 0.1}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 0.1}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(255,0,0);stroke-width:5" /> </c:if> <c:if test="#{sector.rightFrontline}"> <line x1="#{sector.getxCoordiante() + 2.757}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 2.757}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(255,0,0);stroke-width:5" /> </c:if> <c:if test="#{sector.upFrontline}"> <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 0.1}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 0.1}%" style="stroke:rgb(255,0,0);stroke-width:5" /> </c:if> <c:if test="#{sector.downFrontline}"> <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 3.23}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 3.23}%" style="stroke:rgb(255,0,0);stroke-width:5" /> </c:if> </c:if> <c:if test="#{sector.side == 'BLUE'}"> <c:if test="#{sector.leftFrontline}"> <line x1="#{sector.getxCoordiante() + 0.1}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 0.1}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(0,0,255);stroke-width:5" /> </c:if> <c:if test="#{sector.rightFrontline}"> <line x1="#{sector.getxCoordiante() + 2.757}%" y1="#{sector.getyCoordiante()}%" x2="#{sector.getxCoordiante() + 2.757}%" y2="#{sector.getyCoordiante() + 3.33}%" style="stroke:rgb(0,0,255);stroke-width:5" /> </c:if> <c:if test="#{sector.upFrontline}"> <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 0.1}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 0.1}%" style="stroke:rgb(0,0,255);stroke-width:5" /> </c:if> <c:if test="#{sector.downFrontline}"> <line x1="#{sector.getxCoordiante()}%" y1="#{sector.getyCoordiante() + 3.23}%" x2="#{sector.getxCoordiante() + 2.857}%" y2="#{sector.getyCoordiante() + 3.23}%" style="stroke:rgb(0,0,255);stroke-width:5" /> </c:if> </c:if> </c:forEach> </svg>',
+            projection: projection,
+            imageExtent: extent
+            })
+        });      
+        // added in extra file because adding this layer to file current_state.xhtml will make map not to load.
+    </script>  
+</ui:composition>

@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Factory Detail
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="/SMWeb/clodwar/templates/background/css/full.css" rel="stylesheet"/>
+        <style>
+            h4 {
+                color: black;
+            }
+            .table.firstleft td:first-child {
+                text-align: left;
+            }
+        </style>
+    </ui:define>
+    
+    <ui:define name="content">
+        <div class="row" style="background-color: rgba(255,255,255,0.6); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+            <c:set value="${ClodwarProfileBean.getFactoryByName(param['name'])}" var="factory"></c:set>
+            <div class="col-lg-8 col-lg-offset-2">
+                <c:if test="#{ClodwarProfileBean.getFactoryByName(param['name']) == null}" >
+                    <h1 class="text-center" style="color: red">Airfield with name: #{param['name']} does not exist !</h1>
+                    <script>
+                        window.stop();
+                    </script> 
+                </c:if>
+                <h1 class="text-center">#{factory.name} Factory</h1>
+            </div> 
+            <c:if test="#{ClodwarProfileBean.getFactoryByName(param['name']) != null and ClodwarProfileBean.getFactoryByName(param['name']).side != AuthenticationBean.identity.side}" >
+                <div class="col-lg-12">
+                    <h1 class="text-center" style="color: red">You are not allowed to enter this page !</h1>
+                </div>
+                <script>
+                    window.stop();
+                </script>                    
+            </c:if> 
+            <div class="col-lg-2">   
+                <ul class="list-inline">    
+                    <c:if test="#{factory.side == 'BLUE'}">
+                        <li><img src="/SMWeb/clodwar/templates/background/images/Allies.png" style="max-height: 36px; max-width: 36px; margin-top: -5px"/></li>
+                        <li><h3 style="color: blue; margin-top: 25px">Allies</h3></li>
+                    </c:if> 
+                    <c:if test="#{factory.side == 'RED'}">
+                        <li><img src="/SMWeb/clodwar/templates/background/images/Axis.png" style="max-height: 36px; max-width: 36px; margin-top: -5px"/></li>
+                        <li><h3 style="color: red; margin-top: 25px">Axis</h3></li>
+                    </c:if> 
+                </ul> 
+            </div>
+            <div class="col-md-4 col-md-offset-1">
+                <h4>Sector: #{factory.position}</h4>
+                <h4>Exact position: [#{ClodwarBean.round(factory.xCoordinate)}, #{ClodwarBean.round(factory.yCoordinate)}]</h4>
+                <label class="text-center">Health: </label>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success" role="progressbar" style="width: #{(factory.health / 100)*100}%">
+                        <c:if test="#{factory.health &gt;= 7}" >
+                            #{ClodwarBean.round(factory.health)}%
+                        </c:if>
+                    </div>
+                    <div class="progress-bar progress-bar-danger" role="progressbar" style="text-align: left; width: #{(100 - factory.health)/(100)*100}%">    
+                        <c:if test="#{factory.health &lt; 7}" >
+                            <div style=" margin-left: 3px">#{ClodwarBean.round(factory.health)}%</div>
+                        </c:if>
+                    </div>
+                </div>
+                <h4>Resources: #{factory.resourcesWeight} / #{factory.resourcesLimit} kg (#{(ClodwarBean.round((factory.resourcesWeight / factory.resourcesLimit)* 100))}%)</h4>  
+                <h:form>
+                    <h3 style="color: black">Resources</h3>
+                    <table class="table table-striped firstleft stripe table-bordered" id="resources" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4)">
+                            <th>Type</th>
+                            <th style="text-align: right">Amount</th> 
+                        </tr>
+                        <c:forEach items="#{factory.resources}" var="item">
+                            <tr>
+                                <td>#{item.name}</td>
+                                <td>#{item.count}</td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>   
+    
+</ui:composition>

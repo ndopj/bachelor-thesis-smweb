@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/clodwar/templates/public-template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Resources
+    </ui:define>
+
+    <ui:define name="image">
+        <link href="#{request.contextPath}/clodwar/templates/background/css/full8.css" rel="stylesheet"/>
+    </ui:define>
+    
+    <ui:define name="body">
+        <script type="text/javascript">
+            
+            function showForm(tableId, buttonId) {                
+                tabs = document.getElementsByClassName("tabData");
+                for (i = 0; i &lt; tabs.length; i++) {
+                    tabs[i].style.display = "none";
+                }   
+                var buttons = document.getElementsByClassName("btn");
+                for (i = 0; i &lt; buttons.length; i++) {
+                    buttons[i].className = buttons[i].className.replace(" active", "");
+                } 
+                
+                var obj = document.getElementById(tableId);
+                obj.style.display = "table";                
+                               
+                var obj2 = document.getElementById(buttonId);
+                obj2.className += " active";
+            }
+
+        </script>
+    </ui:define>
+    
+    <ui:define name="head">
+        <style>
+            h2 {
+                color: black;
+            }
+            .table.airfield td:nth-child(2), table.airfield td:nth-child(3), table.sectors td:first-child, table.sectors td:nth-child(3),
+            table.factory td:nth-child(2), table.factory td:nth-child(3), table.warehouse td:nth-child(2), table.warehouse td:nth-child(3){
+                text-align: left;
+            }​ 
+        </style>
+        <style>                        
+            .table.sectors td:nth-child(2), table.side td:last-child, table.group td:last-child, table.factory td:nth-child(4), table.warehouse td:nth-child(4){
+                text-align: center;
+            }
+        </style>
+        <style>                        
+            .table.side td:first-child, table.side td:nth-child(5), table.group td:first-child, table.group td:nth-child(6){
+                text-align: right;
+            }
+        </style>       
+    </ui:define>
+    
+    <ui:define name="content">        
+        <div class="row" style="background-color: rgba(255,255,255,0.7); margin-top: 50px; min-height: 80vh; margin-bottom: 50px">
+            <div class="col-lg-12">
+                <h1 class="text-center">ClodWar Resources</h1>
+            </div> 
+            <div class="col-md-offset-1">
+                <a onclick="showForm('airfieldsForm', 'airfieldButton');" class="btn btn-default btn-lg active" role="button" id="airfieldButton">Airfields</a>
+                <a onclick="showForm('sectorsForm', 'sectorButton');" class="btn btn-default btn-lg" role="button" id="sectorButton">Sectors</a>
+                <a onclick="showForm('factoriesForm', 'factoryButton');" class="btn btn-default btn-lg" role="button" id="factoryButton">Factories</a>
+                <a onclick="showForm('warehousesForm', 'warehouseButton');" class="btn btn-default btn-lg" role="button" id="warehouseButton">Warehouses</a>
+                <a onclick="showForm('groupForm', 'groupButton');" class="btn btn-default btn-lg" role="button" id="groupButton">My Group Planes</a>
+                <a onclick="showForm('sideForm', 'sideButton');" class="btn btn-default btn-lg" role="button" id="sideButton">Unassigned Planes of my Side</a>                
+            </div>
+            <div class="col-md-10 col-md-offset-1">
+                <h:form id="airfieldsForm" class="tabData" style="min-width: 100%">
+                    <h2 class="text-center">Airfields</h2>
+                    <table class="table table-striped clicktable airfield stripe table-bordered" id="airfields" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style="width: 4%; text-align: right">#</th>
+                            <th>Name</th> 
+                            <th style="width: 10%">Location</th>
+                            <th style="width: 20%; text-align: right">Planes available to me</th>
+                            <th style="width: 23%; text-align: right">Planes available to my group</th>
+                            <th style="width: 10%; text-align: right">Health</th>
+                            <th style="width: 10%; text-align: right">Resources</th>
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="${ClodwarProfileBean.getHomebasesBySide(AuthenticationBean.identity.side)}" var="homebase">                           
+                            <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/profile/airfield.jsf?name=#{homebase.name}'>
+                                <td>#{enum}</td>
+                                <td>#{homebase.name}</td>
+                                <td>#{homebase.position}</td>
+                                <td>#{ClodwarProfileBean.getPlanesCountByHomebaseAndPlayer(homebase.name, AuthenticationBean.identity.login)}</td>  <!-- switch AuthenticationBean.identity.login for 'Rambo' for presentation-->
+                                <td>#{ClodwarProfileBean.getPlanesCountByHomebaseAndSquadron(homebase.name, ClodwarStatisticsBean.getPlayersSquadron(AuthenticationBean.identity.login).name)}</td> <!-- switch AuthenticationBean.identity.login for 'Rambo' for presentation-->
+                                <td>#{homebase.health}%</td>
+                                <td>#{(ClodwarBean.round((homebase.resourcesWeight / homebase.resourcesLimit)* 100))}%</td>
+                            </tr>
+                            <c:set value="#{enum + 1}" var="enum"></c:set>
+                        </c:forEach>                        
+                    </table>                   
+                </h:form>
+            </div>
+            <div class="col-md-8 col-md-offset-2">
+                <h:form id="sectorsForm" class="tabData" style="min-width: 100%; display: none">
+                    <h2 class="text-center">Sectors</h2>
+                    <table class="table table-striped clicktable sectors stripe table-bordered" id="sectors" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th>Name</th> 
+                            <th style="width: 12%; text-align: center">Side</th>
+                            <th style="width: 12%;">State</th>
+                            <th style="width: 12%; text-align: right">Units</th>
+                            <th style="width: 12%; text-align: right">Resources</th>
+                            <th style="width: 12%; text-align: right">X</th>
+                            <th style="width: 12%; text-align: right">Y</th>
+                        </tr>
+                        <c:forEach items="${ClodwarProfileBean.listOfAllSectors}" var="sector">                           
+                            <tr  class='clickable-row' data-href='#{request.contextPath}/clodwar/profile/sector.jsf?name=#{sector.name}'>
+                                <td>#{sector.name}</td>
+                                <c:if test="${sector.side == 'BLUE'}" >
+                                    <td style="color: blue"><img src="#{request.contextPath}/clodwar/templates/background/images/Allies.png" style="max-height: 20px; max-width: 20px"/> Allies</td>
+                                 </c:if> 
+                                 <c:if test="${sector.side == 'RED'}" >
+                                    <td style="color: red"><img src="#{request.contextPath}/clodwar/templates/background/images/Axis.png" style="max-height: 20px; max-width: 20px"/>Axis</td>
+                                 </c:if> 
+                                <c:if test="${sector.side == 'NONE'}" >
+                                    <td>None</td>
+                                 </c:if>
+                                <td>#{sector.state}</td>
+                                <td>#{sector.units}%</td>
+                                <td>#{sector.resources}%</td>
+                                <td>#{ClodwarBean.round((sector.getxCoordiante() / 100) * 2747)}</td>
+                                <td>#{ClodwarBean.round((sector.getyCoordiante() / 100) * 2363)}</td>
+                            </tr>
+                        </c:forEach>                              
+                    </table> 
+                </h:form>
+            </div>
+            <div class="col-md-8 col-md-offset-2">
+                <h:form id="factoriesForm" class="tabData" style="min-width: 100%; display: none">
+                    <h2 class="text-center">Factories</h2>
+                    <table class="table table-striped clicktable factory stripe table-bordered" id="factories" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style="width: 4%; text-align: right">#</th>
+                            <th>Name</th> 
+                            <th style="width: 15%">Location</th>                            
+                            <th style="width: 15%; text-align: center">Side</th>
+                            <th style="width: 15%; text-align: right">Health</th>
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="${ClodwarProfileBean.getFactoriesBySide(AuthenticationBean.identity.side)}" var="factory">                           
+                            <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/profile/factory.jsf?name=#{factory.name}'>
+                                <td>#{enum}</td>
+                                <td>#{factory.name}</td>
+                                <td>#{factory.position} #1</td>                                
+                                <c:if test="${factory.side == 'BLUE'}" >
+                                    <td style="color: blue"><img src="#{request.contextPath}/clodwar/templates/background/images/Allies.png" style="max-height: 20px; max-width: 20px"/> Allies</td>
+                                 </c:if> 
+                                 <c:if test="${factory.side == 'RED'}" >
+                                    <td style="color: red"><img src="#{request.contextPath}/clodwar/templates/background/images/Axis.png" style="max-height: 20px; max-width: 20px"/>Axis</td>
+                                 </c:if> 
+                                <td>#{factory.health}%</td>
+                            </tr>
+                            <c:set value="#{enum + 1}" var="enum"></c:set>
+                        </c:forEach>                        
+                    </table>     
+                </h:form>
+            </div>
+            <div class="col-md-8 col-md-offset-2">
+                <h:form id="warehousesForm" class="tabData" style="min-width: 100%; display: none">
+                    <h2 class="text-center">Warehouses</h2>
+                    <table class="table table-striped clicktable warehouse stripe table-bordered" id="warehouses" style="background-color: rgba(255,255,255,0.6); text-align: right">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style="width: 4%; text-align: right">#</th>
+                            <th>Name</th> 
+                            <th style="width: 15%">Location</th>
+                            <th style="width: 15%; text-align: center">Side</th>
+                            <th style="width: 15%; text-align: right">Health</th>
+                            <th style="width: 15%; text-align: right">Resources</th>
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="${ClodwarProfileBean.getWarehousesBySide(AuthenticationBean.identity.side)}" var="warehouse">                           
+                            <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/profile/warehouse.jsf?name=#{warehouse.name}'>
+                                <td>#{enum}</td>
+                                <td>#{warehouse.name}</td>
+                                <td>#{warehouse.position} #3</td>
+                                <c:if test="${warehouse.side == 'BLUE'}" >
+                                    <td style="color: blue"><img src="#{request.contextPath}/clodwar/templates/background/images/Allies.png" style="max-height: 20px; max-width: 20px"/> Allies</td>
+                                 </c:if> 
+                                 <c:if test="${warehouse.side == 'RED'}" >
+                                    <td style="color: red"><img src="#{request.contextPath}/clodwar/templates/background/images/Axis.png" style="max-height: 20px; max-width: 20px"/>Axis</td>
+                                 </c:if> 
+                                <td>#{warehouse.health}%</td>
+                                <td>#{(ClodwarBean.round((warehouse.resourcesWeight / warehouse.resourcesLimit)* 100))}%</td>
+                            </tr>
+                            <c:set value="#{enum + 1}" var="enum"></c:set>
+                        </c:forEach>                        
+                    </table>     
+                </h:form>
+            </div>
+            <div class="col-md-10 col-md-offset-1">
+                <h:form id="groupForm" class="tabData" style="min-width: 100%; display: none">
+                    <c:set value="${ClodwarStatisticsBean.getPlayersSquadron(AuthenticationBean.identity.login)}" var="squadron"></c:set> <!-- switch AuthenticationBean.identity.login for 'Rambo' for presentation-->
+                    <c:if test="#{squadron == null}"> 
+                        <h2 class="text-center">You are not enlisted in any squadron.</h2>
+                    </c:if>
+                    <c:if test="#{squadron != null}"></c:if>
+                    <ul class="list-inline text-center">   
+                        <li><a href="#{request.contextPath}/clodwar/statistics/squad-stats.jsf?name=#{squadron.name}" style="color: black"><h2>#{squadron.name}</h2></a></li>
+                        <c:if test="${squadron.side == 'BLUE'}">
+                            <li><img src="#{request.contextPath}/clodwar/templates/background/images/Allies.png" style="max-height: 35px; max-width: 35px; margin-top: -10px"/></li>
+                        <li><h2 style="color: blue">Allies</h2></li>
+                        </c:if> 
+                        <c:if test="${squadron.side == 'RED'}">
+                            <li><img src="#{request.contextPath}/clodwar/templates/background/images/Axis.png" style="max-height: 35px; max-width: 35px; margin-top: -10px"/></li>
+                        <li><h2 style="color: red">Axis</h2></li>  
+                        </c:if>                                                                                           
+                    </ul>
+                    <table class="table table-striped clicktable group stripe table-bordered" id="group" style="background-color: rgba(255,255,255,0.6)">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style="text-align: right">#</th>
+                            <th>Name</th>
+                            <th>Type</th> 
+                            <th>Homebase</th>
+                            <th>Assigned to</th>
+                            <th style="text-align: right">Fuel</th>   
+                            <th>Status</th>                                
+                            <th style="text-align: center">Blocked until</th>                                 
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="${ClodwarProfileBean.getPlanesBySquadron(squadron.name)}" var="plane">                     
+                            <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/profile/plane.jsf?name=#{plane.urlName}'>
+                                <td>#{enum}</td>
+                                <td>#{plane.name}</td>
+                                <td>#{plane.type}</td>
+                                <td><a href="#{request.contextPath}/clodwar/profile/airfield.jsf?name=#{plane.homebase}">#{plane.homebase}</a></td>
+                                <td><c:if test="${plane.owner == null}">-</c:if><c:if test="${plane.owner != null}">#{plane.owner}</c:if></td>
+                                <td>#{ClodwarBean.round(plane.fuel)}%</td>
+                                <td>#{plane.status}</td>
+                                <td title="#{ClodwarBean.getBlockedTitile(plane.blocked)}">#{plane.blocked.toLocaleString()}<c:if test="#{plane.blocked == null}">-</c:if></td>
+                            </tr>
+                            <c:set value="#{enum + 1}" var="enum"></c:set>
+                        </c:forEach>                      
+                    </table>                       
+                </h:form>
+            </div>
+            <div class="col-md-10 col-md-offset-1">
+                <h:form id="sideForm" class="tabData" style="min-width: 100%; display: none">
+                    <h2 class="text-center">Unassigned Planes of my Side</h2>
+                    <table class="table table-striped clicktable side stripe table-bordered" id="side" style="background-color: rgba(255,255,255,0.6)">
+                        <tr style="background-color: rgba(0, 0, 64, 0.4); cursor: default">
+                            <th style="text-align: right">#</th>
+                            <th>Name</th>
+                            <th>Type</th> 
+                            <th>Homebase</th>
+                            <th style="text-align: right">Fuel</th>   
+                            <th>Status</th>                                
+                            <th style="text-align: center">Blocked until</th>                                 
+                        </tr>
+                        <c:set value="1" var="enum"></c:set>
+                        <c:forEach items="${ClodwarProfileBean.getUnassignedPlanesOfTheSide(AuthenticationBean.identity.side)}" var="plane">                            
+                            <tr class='clickable-row' data-href='#{request.contextPath}/clodwar/profile/plane.jsf?name=#{plane.urlName}'>
+                                <td>#{enum}</td>
+                                <td>#{plane.name}</td>
+                                <td>#{plane.type}</td>
+                                <td><a href="#{request.contextPath}/clodwar/profile/airfield.jsf?name=#{plane.homebase}">#{plane.homebase}</a></td>
+                                <td>#{ClodwarBean.round(plane.fuel)}%</td>
+                                <td>#{plane.status}</td>
+                                <td title="#{ClodwarBean.getBlockedTitile(plane.blocked)}">#{plane.blocked.toLocaleString()}<c:if test="#{plane.blocked == null}">-</c:if></td>
+                            </tr>
+                            <c:set value="#{enum + 1}" var="enum"></c:set>
+                        </c:forEach>                              
+                    </table>                      
+                </h:form>
+            </div>            
+        </div>
+    </ui:define>   
+    
+</ui:composition>
+</html>
+

@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Toto je registracny formular pre ADMINA!! -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/templates/admin-template.xhtml"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Registrace
+    </ui:define>
+
+    <ui:define name="content">
+        <h1>Registrace do systému</h1>
+        <h:form id="register">
+            <table>
+                <tr>
+                    <td>login: </td>
+                    <td><h:inputText id="login" required="true"
+                                     requiredMessage="Login musí být zadán"
+                                     value="#{RegistrationBean.pilot.login}"
+                                     validator="#{RegistrationBean.validateLogin}"/><br/>
+                        <h:message for="login" styleClass="error"/></td>
+                    <td>Login pro přihlášení do systému.</td>
+                </tr>
+                <tr>
+                    <td>heslo: </td>
+                    <td><h:inputSecret id="pass" required="true"
+                                       requiredMessage="Heslo musí být zadáno"
+                                       value="#{RegistrationBean.passwd}"/><br/>
+                        <h:message for="pass" styleClass="error"/></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><h:commandButton value="Registrovat generála" action="#{RegistrationBean.registerGeneral}"/></td>
+                </tr>
+            </table>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+</html>
+

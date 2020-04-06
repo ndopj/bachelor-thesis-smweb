@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app=clodwar>
+<head>
+    <title ng-bind-template="{{{true: pageTitleService.getTitle() + &apos; | &apos;}[!!pageTitleService.getTitle()]}}ClodWar">
+    </title>
+    <meta name=viewport content="width=device-width,initial-scale=1">
+    <meta charset=utf-8>
+    <link rel=stylesheet href=app.full.min.css>
+</head>
+<body>
+    <div ng-if=bussySpinner class=preloader>
+        <span class=preloader-box>
+            <cube-grid-spinner>
+            </cube-grid-spinner>{{preloaderText}}
+        </span>
+    </div>
+    <div ng-cloak="">
+        <nav class="navbar navbar-default main-navbar">
+            <div class=container-fluid>
+                <div class=navbar-header>
+                    <a class=navbar-brand ui-sref=lobby.main>ClodWar lobby</a>
+                </div>
+                <div class="collapse navbar-collapse" id=bs-example-navbar-collapse-1>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class=nav-btn tooltip="{{{true: &apos;Enable&apos;, false: &apos;Disable&apos;}[!!chatService.soundMute()]}} chat notifications" tooltip-placement=bottom>
+                            <a ng-click=chatService.soundMute(!chatService.soundMute())>
+                                <i class="fa fa-bell-slash-o" ng-if=chatService.soundMute()></i>
+                                <i class="fa fa-bell-o" ng-if=!chatService.soundMute()></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-href={{userService.getSMWebAddress()}}>SMWeb</a>
+                        </li>
+                        <li class="dropdown nav-btn" dropdown="" is-open=status.isopen>
+                            <a href=javascript: class=dropdown-toggle dropdown-toggle="" aria-expanded=false>
+                                <i class="fa fa-user"></i> {{userService.currentUser.login}}&nbsp;
+                                <span class=caret></span>
+                            </a>
+                            <ul class=dropdown-menu role=menu>
+                                <li>
+                                    <a href=javascript: ng-click=userService.logOut()>Logout</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id=content class=container-fluid>
+            <div class="row full-height" ui-view=""></div>
+        </div>
+    </div>
+    <script src=app.full.min.js></script>
+</body>
+</html>
