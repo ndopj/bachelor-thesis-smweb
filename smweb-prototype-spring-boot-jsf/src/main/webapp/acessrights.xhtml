@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/templates/public-template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <ui:define name="title">
+        About Project
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+            <p:poll interval="3" update="votes" />
+            <p:chart id="votes" type="pie" model="#{chartView.livePieModel}" style="width:400px;height:300px"/>
+
+            <h:outputLabel for="basic1" value="Candidate 1: "/>
+            <p:spinner id="basic1" value="#{chartView.candidate1}">
+                <p:ajax listener="#{chartView.synchronizePie()}" update="votes" />
+            </p:spinner>
+
+            <h:outputLabel for="basic2" value="Candidate 2: " />
+            <p:spinner id="basic2" value="#{chartView.candidate2}">
+                <p:ajax listener="#{chartView.synchronizePie()}" update="votes" />
+            </p:spinner>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

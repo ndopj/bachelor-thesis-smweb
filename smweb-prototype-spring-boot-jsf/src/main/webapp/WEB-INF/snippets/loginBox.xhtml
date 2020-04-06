@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <div>
+        <c:if test="#{userController.getIdentity() != null}">
+            <h:form>
+                <table>
+                    <tr>
+                        <td>Prihlásený: </td>
+                        <td><strong><h:outputText value="#{userController.getIdentity()} "/></strong></td>
+                        <td><h:commandButton value="Odhlasit sa" action="#{userController.logout()}"></h:commandButton>
+                        </td>
+                    </tr>
+                </table>
+            </h:form>
+
+        </c:if>
+        <c:if test="#{userController.getIdentity() == null}">
+            <h:form method="post">
+                <span>
+                    <h:messages styleClass="error"/>
+                </span>
+                <span>
+                    login:
+                    <h:inputText value="#{userForm.userName}"/>
+                </span>
+                <span>
+                    heslo:
+                    <h:inputSecret value="#{userForm.password}"/>
+                </span>
+
+                <h:commandButton value="Prihlásiť" type="submit" action="#{userController.login}"/>
+            </h:form>
+        </c:if>
+    </div>
+</ui:composition>
