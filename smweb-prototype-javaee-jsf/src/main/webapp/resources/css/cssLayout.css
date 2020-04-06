@@ -1,0 +1,171 @@
+#page-wrapper {
+    width: 985px;
+    margin-left: auto;
+    margin-right: auto;
+
+    background: #888855;
+    border: solid 1px #999966;
+}
+
+#top {
+    position: relative;
+    background-color: #999966;
+    color: black;
+    padding: 5px;
+    margin: 0px;
+}
+
+#bottom {
+    clear: both;
+    position: relative;
+    background-color: #999966;
+    padding: 5px;
+    margin: 0px;
+}
+
+#left {
+    position: relative;
+    float: left;
+    background-color: #999966;
+    padding: 5px;
+    width: 180px;
+
+}
+
+#right {
+    float: right;
+    background-color: #ece3a5;
+    padding: 5px;
+    width: 150px;
+}
+
+#content {
+    background-image: url('../img/paper.jpg');
+    background-repeat: repeat-y;
+    min-height: 300px;
+}
+
+.center_content {
+    position: relative;
+    background-color: #dddddd;
+    padding: 10px;
+}
+
+.content {
+    position: relative;
+    height: auto;
+}
+
+.left_content {
+    position: relative;
+    background-color: #dddddd;
+    padding: 10px;
+    margin-left: 190px;
+}
+
+.right_content {
+    background-color: #dddddd;
+    padding: 10px;
+    margin: 0px;
+}
+
+#top a:link, #top a:visited {
+    color: white;
+    font-weight : bold;
+    text-decoration: none;
+}
+
+#top a:link:hover, #top a:visited:hover  {
+    color: black;
+    font-weight : bold;
+    text-decoration : underline;
+}
+
+#top #breadcrums {
+    padding: 8px;
+}
+
+#top-loginBox {
+    float: right;
+}
+
+#left h3 {
+    text-align: center;
+}
+
+#left ul {
+    text-align: center;
+    padding-left: 0px;
+    border-top: 1px solid #AAAA77;
+    border-bottom: 1px solid #888855;
+}
+
+#left ul li {
+    list-style: none;
+    padding: 5px;
+    padding-bottom: 10px;
+    font-size: 18px;
+    border-top: 1px solid #888855;
+    border-bottom: 1px solid #AAAA77;
+}
+
+#left ul li a {
+    color: #AA1100;
+}
+
+#bottom #footnote {
+    color: black;
+    text-align: center;
+    font-size: 60%;
+}
+
+.RadarScreenContainer {
+    height: 810px;
+}
+
+.twoSidesStatistics td {
+    vertical-align: top;
+}
+
+.statistics_content {
+    background-color: #e7e7e7;
+    margin: -10px;
+    padding: 10px;
+}
+
+.statistics_table {
+    background-color: #F1F1F1;
+    border-collapse: collapse;
+    border-bottom: 1px solid #000;
+}
+
+.statistics_table td, th {
+    padding: 5px;
+    border: 1px solid #000;
+    border-bottom:0;
+}
+
+.statistics_object_name {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.panelgrid_no_border {
+    border-spacing: 0px;
+    border: 0px;
+}
+
+.panelgrid_top_aligned>tbody>tr>td {
+    vertical-align: top;
+}
+
+#table_top_aligned {
+    display: table;
+}
+.table_row_top_aligned {
+    display: table-row;
+}
+.table_cell_top_aligned {
+    display: table-cell;
+    vertical-align: top;
+}
